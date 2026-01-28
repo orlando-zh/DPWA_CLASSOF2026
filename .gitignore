@@ -1,0 +1,32 @@
+# Archivos de usuario y configuración personal
+.vs/
+*.user
+*.useros
+*.suo
+*.sln.docstates
+
+# Salidas de compilación (Binarios)
+[Bb]in/
+[Oo]bj/
+
+# Caché de Roslyn y archivos temporales de compilación
+*.pdb
+*.cache
+*.dtbcache.json
+
+## --- NuGet --- ##
+packages/
+!packages/build/
+*.nupkg
+
+## --- ASP.NET --- ##
+# Archivos temporales de publicación y logs
+*.log
+*.publish.xml
+App_Data/Jobs/
+App_Data/Logs/
+
+## --- Otros --- ##
+# Archivos de sistema
+Thumbs.db
+desktop.ini
