@@ -7,7 +7,7 @@
 // </generado automáticamente>
 //------------------------------------------------------------------------------
 
-namespace ProyectoReservas
+namespace CapaPresentacion
 {
 
 

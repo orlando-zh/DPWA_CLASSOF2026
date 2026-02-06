@@ -1,4 +1,4 @@
-body {
+﻿body {
     margin: 0;
     font-family: Arial, sans-serif;
     background-color: #e5e5e5;
@@ -36,35 +36,35 @@ body {
     font-weight: bold;
 }
 
-    .login-form input {
-        padding: 8px;
-        border-radius: 4px;
-        border: none;
-        outline: none;
+.login-form input {
+    padding: 8px;
+    border-radius: 4px;
+    border: none;
+    outline: none;
+}
+
+    .login-form input[type=password],
+    .login-form input[type=text] {
+        width: 160px;
     }
 
-        .login-form input[type=password],
-        .login-form input[type=text] {
-            width: 160px;
-        }
+    .login-form input:focus {
+        outline: 2px solid #3b82f6;
+    }
 
-        .login-form input:focus {
-            outline: 2px solid #3b82f6;
-        }
+    .login-form button,
+    .login-form input[type=submit] {
+        padding: 8px 16px;
+        background-color: #3b82f6;
+        border: none;
+        color: white;
+        border-radius: 4px;
+        cursor: pointer;
+    }
 
-        .login-form button,
-        .login-form input[type=submit] {
-            padding: 8px 16px;
-            background-color: #3b82f6;
-            border: none;
-            color: white;
-            border-radius: 4px;
-            cursor: pointer;
+        .login-form input[type=submit]:hover {
+            background-color: #2563eb;
         }
-
-            .login-form input[type=submit]:hover {
-                background-color: #2563eb;
-            }
 
 
 .mensaje {

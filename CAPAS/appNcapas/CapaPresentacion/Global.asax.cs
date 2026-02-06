@@ -5,7 +5,7 @@ using System.Web;
 using System.Web.Security;
 using System.Web.SessionState;
 
-namespace ProyectoReservas
+namespace CapaPresentacion
 {
     public class Global : System.Web.HttpApplication
     {

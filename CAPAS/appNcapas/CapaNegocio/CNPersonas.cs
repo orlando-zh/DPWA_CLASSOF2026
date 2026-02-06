@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CapaNegocios
+namespace CapaNegocio
 {
     public class CNPersonas
     {
@@ -15,7 +15,9 @@ namespace CapaNegocios
         {
             if (usuario == "" || clave == "")
                 return false;
+
             return dal.ValidarUsuario(usuario, clave);
         }
     }
+
 }
