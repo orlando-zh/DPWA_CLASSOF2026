@@ -22,13 +22,17 @@
 </div>
         <hr />
 
-        <asp:GridView ID="dgvHabitaciones" runat="server" AutoGenerateColumns="false">
+        <asp:GridView ID="dgvHabitaciones" runat="server" AutoGenerateColumns="false" DataKeyNames="id_habitaciones"
+            DataUpdating="dvgHabitaciones_RowUpdating"
+            DataCancelingEdit="dvgHabitaciones_RowCancelingEdit"
+            OnRowDeleting="dvgHabitaciones_RowDeleting" OnRowCancelingEdit="dgvHabitaciones_RowCancelingEdit" OnRowEditing="dgvHabitaciones_RowEditing" OnRowUpdating="dgvHabitaciones_RowUpdating">
             <Columns>
                 <asp:BoundField DataField="id_habitaciones" HeaderText="ID" />
                 <asp:BoundField DataField="numero" HeaderText="#" />
                 <asp:BoundField DataField="descripcion" HeaderText="Descipción" />
                 <asp:BoundField DataField="cant_huespedes" HeaderText="Max-Personas" />
-
+                <asp:CommandField ShowEditButton="true" EditText="Editar" />
+                <asp:CommandField ShowDeleteButton="true" DeleteText="Eliminar" />
             </Columns>
         </asp:GridView>
     </form>

@@ -1,0 +1,25 @@
+﻿@model IEnumerable<MVC.Models.VideoJuego>
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+
+
+
+<h2>Videojuegos Disponibles</h2>
+
+<div class="row">
+    @foreach (var juego in Model)
+    {
+        <div class="col-md-4">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">@juego.Titulo</h5>
+                    <p class="card-text">@juego.Descripcion</p>
+                    <p><strong>Categoría:</strong> @juego.Categoria</p>
+                    <p><strong>Precio:</strong> $@juego.Precio</p>
+                </div>
+            </div>
+        </div>
+    }
+</div>

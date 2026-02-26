@@ -41,5 +41,26 @@ namespace CapaPresentacion
                 Response.Write("<script>alert('Error al agregar la habitación');</script>");
             }
         }
+
+        protected void dgvHabitaciones_RowEditing(object sender, GridViewEditEventArgs e)
+        {
+
+        }
+
+        protected void dgvHabitaciones_RowUpdating(object sender, GridViewUpdateEventArgs e)
+        {
+
+        }
+
+        protected void dvgHabitaciones_RowDeleting(object sender, GridViewDeleteEventArgs e)
+        {
+            int id = Convert.ToInt32(dgvHabitaciones.DataKeys[e.RowIndex].Value);
+        }
+
+        protected void dgvHabitaciones_RowCancelingEdit(object sender, GridViewCancelEditEventArgs e)
+        {
+            dgvHabitaciones.EditIndex = -1;
+            CargarGrid();
+        }
     }
 }

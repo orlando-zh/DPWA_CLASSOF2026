@@ -1,0 +1,33 @@
+﻿@model IEnumerable<MVC.Models.VideoJuego>
+
+<h2>Lista de Videojuegos</h2>
+
+<a asp-action="Create" class="btn btn-primary">Nuevo Juego</a>
+
+<table class="table table-striped mt-3">
+    <thead>
+        <tr>
+            <th>Título</th>
+            <th>Precio</th>
+            <th>Categoría</th>
+            <th>Descripción</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var juego in Model)
+        {
+            <tr>
+                <td>@juego.Titulo</td>
+                <td>$@juego.Precio</td>
+                <td>@juego.Categoria</td>
+                <td>@juego.Descripcion</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@juego.id">Editar</a>
+                    <a asp-action="Details" asp-route-id="@juego.id">Ver</a>
+                    <a asp-action="Delete" asp-route-id="@juego.id">Eliminar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
