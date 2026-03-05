@@ -1,0 +1,48 @@
+﻿@model APPEnvios.Models.Envio
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card border-0 shadow-sm rounded-3 p-4">
+            <h5 class="fw-bold mb-4 text-warning">
+                <i class="bi bi-pencil-square me-2"></i>Actualizar Envío #@Model.EnvioId
+            </h5>
+
+            <form asp-action="Edit" method="post">
+                <input type="hidden" asp-for="EnvioId" />
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label small fw-medium">Estado del Envío</label>
+                        <select asp-for="EstadoId" class="form-select rounded-pill" asp-items="ViewBag.EstadoId"></select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label small fw-medium">Estado de Pago</label>
+                        <select asp-for="EstadoPagoId" class="form-select rounded-pill" asp-items="ViewBag.EstadoPagoId"></select>
+                    </div>
+
+                    <div class="col-md-12">
+                        <hr class="my-3 text-muted">
+                        <p class="text-muted small mb-3">Actualización de costos o sucursal:</p>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label small fw-medium">Costo ($)</label>
+                        <input asp-for="Costo" class="form-control rounded-pill" type="number" step="0.01" />
+                        <span asp-validation-for="Costo" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label small fw-medium">Sucursal</label>
+                        <select asp-for="SucursalOrigenId" class="form-select rounded-pill" asp-items="ViewBag.SucursalOrigenId"></select>
+                    </div>
+                </div>
+
+                <div class="mt-4 d-flex gap-2">
+                    <button type="submit" class="btn btn-warning rounded-pill px-4 shadow-sm fw-bold">Guardar Cambios</button>
+                    <a asp-action="Index" class="btn btn-light border rounded-pill px-4">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

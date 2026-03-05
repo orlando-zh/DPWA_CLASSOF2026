@@ -1,0 +1,26 @@
+﻿@model APPEnvios.Models.Envio
+
+<div class="row justify-content-center">
+    <div class="col-md-6 text-center">
+        <div class="card border-0 shadow-sm rounded-4 p-5">
+            <div class="text-danger mb-3">
+                <i class="bi bi-exclamation-triangle-fill fs-1"></i>
+            </div>
+            <h4 class="fw-bold text-dark">¿Eliminar este envío?</h4>
+            <p class="text-muted mb-4">Esta acción no se puede deshacer. Se borrará el registro del envío hacia <strong>@Model.Destinatario?.Nombre</strong>.</p>
+
+            <div class="bg-light p-3 rounded-3 mb-4 text-start">
+                <div class="small text-muted mb-1">ID del Envío: #@Model.EnvioId</div>
+                <div class="small text-muted">Fecha de Registro: @Model.FechaEnvio.ToLongDateString()</div>
+            </div>
+
+            <form asp-action="Delete" method="post">
+                <input type="hidden" asp-for="EnvioId" />
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-danger rounded-pill py-2 fw-bold">Confirmar Eliminación</button>
+                    <a asp-action="Index" class="btn btn-light border rounded-pill py-2">Cancelar y Volver</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

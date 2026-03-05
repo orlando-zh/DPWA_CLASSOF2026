@@ -26,5 +26,82 @@ namespace MVC.Controllers
         {
             return View();
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+
+        public async Task<IActionResult> Create(VideoJuego juego)
+        {
+            if (ModelState.IsValid)
+                return View(juego);
+            {
+                _context.VideoJuegos.Add(juego);
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction(nameof(Index));
+            }
+        }
+
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null) return NotFound();
+
+            var juego = await _context.VideoJuegos.FindAsync(id);
+            if (juego == null) return NotFound();
+            return View(juego);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+
+        public async Task<IActionResult> Edit(int id, VideoJuego juego)
+        {
+            if (id != juego.id) return NotFound();
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(juego);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!_context.VideoJuegos.Any(e => e.id == juego.id))
+                        return NotFound();
+                    else throw;
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View(juego);
+        }
+
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null) return NotFound();
+
+            var juego = await _context.VideoJuegos
+                .FirstOrDefaultAsync(m => m.id == id);
+
+            if (juego == null) return NotFound();
+
+            return View(juego);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var juego = await _context.VideoJuegos.FindAsync(id);
+            if (juego != null)
+            {
+                _context.VideoJuegos.Remove(juego);
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction(nameof(Index));
+
+
+        }
     }
 }

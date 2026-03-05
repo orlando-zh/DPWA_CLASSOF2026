@@ -4,24 +4,16 @@ using System.Data;
 
 namespace APPEnvios.Models
 {
-    public class Destinatario
+    public class Sucursal
     {
         [Key]
-        public int DestinatarioId { get; set; }
+        public int SucursalId { get; set; }
 
         [Required]
         [StringLength(100)]
-        public string Nombre { get; set; }
+        public string NombreSucursal { get; set; }
 
-        [StringLength(20)]
-        public string Telefono { get; set; }
-
-        [StringLength(255)]
-        public string Direccion { get; set; }
-
-        [StringLength(100)]
-        public string Ciudad { get; set; }
-
+        [Required]
         [StringLength(100)]
         public string Departamento { get; set; }
 

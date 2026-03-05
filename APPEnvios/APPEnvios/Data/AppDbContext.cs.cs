@@ -16,5 +16,12 @@ namespace APPEnvios.Data
         public DbSet<EstadoEnvio> EstadosEnvio { get; set; }
 
         public DbSet<Paquete> Paquetes { get; set; }
+
+        public DbSet<Sucursal> Sucursales { get; set; }
+        public DbSet<Rol> Roles { get; set; }
+        public DbSet<EstadoPago> EstadosPago { get; set; }
+        public DbSet<Usuario> Usuarios { get; set; }
+        public DbSet<Auditoria_Envio> Auditoria_Envios { get; set; }
+
     }
 }

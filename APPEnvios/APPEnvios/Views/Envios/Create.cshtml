@@ -1,0 +1,47 @@
+﻿@model APPEnvios.Models.Envio
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card border-0 shadow-sm rounded-3 p-4">
+            <h5 class="fw-bold mb-4 text-primary"><i class="bi bi-plus-circle me-2"></i>Registrar Nuevo Envío</h5>
+
+            <form asp-action="Create" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label small fw-medium">Cliente Remitente</label>
+                        <select asp-for="ClienteId" class="form-select rounded-pill" asp-items="ViewBag.ClienteId">
+                            <option value="">Seleccionar Cliente</option>
+                        </select>
+                        <span asp-validation-for="ClienteId" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label small fw-medium">Destinatario</label>
+                        <select asp-for="DestinatarioId" class="form-select rounded-pill" asp-items="ViewBag.DestinatarioId">
+                            <option value="">Seleccionar Destinatario</option>
+                        </select>
+                        <span asp-validation-for="DestinatarioId" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label small fw-medium">Sucursal de Origen</label>
+                        <select asp-for="SucursalOrigenId" class="form-select rounded-pill" asp-items="ViewBag.SucursalOrigenId"></select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label small fw-medium">Costo del Envío ($)</label>
+                        <input asp-for="Costo" class="form-control rounded-pill" type="number" step="0.01" placeholder="0.00" />
+                        <span asp-validation-for="Costo" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <div class="mt-4 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary rounded-pill px-4 shadow-sm">Guardar Registro</button>
+                    <a asp-action="Index" class="btn btn-light border rounded-pill px-4">Volver al Listado</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

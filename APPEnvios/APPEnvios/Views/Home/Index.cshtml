@@ -2,7 +2,88 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <div>
+        <h4 class="fw-semibold mb-1 text-dark">
+            Buen día, @(User.Identity?.Name?.Split('@')[0] ?? "Usuario") 
+        </h4>
+        <p class="text-muted mb-0 small">Aquí tienes un resumen actualizado de la actividad en Small Box.</p>
+    </div>
+    <a asp-controller="Envios" asp-action="Create"
+       class="btn btn-primary rounded-pill px-4 py-2 shadow-sm">
+        <i class="bi bi-plus-lg me-2"></i>Crear Nuevo Envío
+    </a>
+</div>
+
+<div class="row g-3 mb-4">
+
+    <div class="col-12 col-md-4">
+        <div class="card border-0 shadow-sm rounded-3 h-100">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <span class="text-muted small fw-medium text-uppercase ls-1">Envíos Totales</span>
+                    <div class="rounded-circle d-flex align-items-center justify-content-center"
+                         style="width:40px;height:40px;background:#e8f1fb;">
+                        <i class="bi bi-box-seam" style="color:#1b6ec2;font-size:1.1rem;"></i>
+                    </div>
+                </div>
+                <h2 class="fw-bold text-dark mb-0">@ViewBag.TotalEnvios</h2>
+                <p class="text-muted small mt-1 mb-0">Paquetes registrados</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-md-4">
+        <div class="card border-0 shadow-sm rounded-3 h-100">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <span class="text-muted small fw-medium text-uppercase">En Tránsito</span>
+                    <div class="rounded-circle d-flex align-items-center justify-content-center"
+                         style="width:40px;height:40px;background:#fff8e1;">
+                        <i class="bi bi-truck" style="color:#f59e0b;font-size:1.1rem;"></i>
+                    </div>
+                </div>
+                <h2 class="fw-bold text-dark mb-0">@ViewBag.EnTransito</h2>
+                <p class="text-muted small mt-1 mb-0">
+                    <i class="bi bi-clock text-warning"></i> En camino ahora
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-md-4">
+        <div class="card border-0 shadow-sm rounded-3 h-100">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <span class="text-muted small fw-medium text-uppercase">Destinatarios</span>
+                    <div class="rounded-circle d-flex align-items-center justify-content-center"
+                         style="width:40px;height:40px;background:#e8f5e9;">
+                        <i class="bi bi-people" style="color:#22c55e;font-size:1.1rem;"></i>
+                    </div>
+                </div>
+                <h2 class="fw-bold text-dark mb-0">@ViewBag.TotalDestinatarios</h2>
+                <p class="text-muted small mt-1 mb-0">Contactos en agenda</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card border-0 shadow-sm rounded-3">
+    <div class="card-body p-4">
+        <h6 class="fw-semibold text-dark mb-3">Accesos Rápidos</h6>
+        <div class="d-flex flex-wrap gap-2">
+            <a asp-controller="Envios" asp-action="Index"
+               class="btn btn-light border rounded-pill px-3 btn-sm">
+                <i class="bi bi-list-ul me-1"></i>Ver todos mis envíos
+            </a>
+            <a asp-controller="Destinatarios" asp-action="Create"
+               class="btn btn-light border rounded-pill px-3 btn-sm">
+                <i class="bi bi-person-plus me-1"></i>Agregar destinatario
+            </a>
+            <a asp-controller="Envios" asp-action="Index"
+               class="btn btn-light border rounded-pill px-3 btn-sm">
+                <i class="bi bi-clock-history me-1"></i>Historial de envíos
+            </a>
+        </div>
+    </div>
 </div>
