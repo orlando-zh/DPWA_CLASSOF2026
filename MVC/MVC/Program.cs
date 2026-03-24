@@ -13,6 +13,7 @@ builder.Services.AddDbContext<AppDbContext>(option =>
 );
 
 
+builder.Services.AddSession();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -28,14 +29,19 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
+app.UseSession();
 app.UseAuthorization();
+
+
 
 app.MapStaticAssets();
 
+
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
+    pattern: "{controller=Account}/{action=Index}/{id?}")
     .WithStaticAssets();
+
 
 
 app.Run();

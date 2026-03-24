@@ -4,7 +4,7 @@
 *@
 
 <h2>Editar Videojuego</h2>
-<form asp-action="Edit" method="post">
+<form asp-action="Edit" method="post" enctype="multipart/form-data">
     <input type="hidden" asp-for="id" />
 
     <div>
@@ -25,6 +25,25 @@
     <div>
         <label>Descripción</label>
         <textarea asp-for="Descripcion" class="form-control"></textarea>
+    </div>
+
+    <div>
+        <label>Imagen Actual</label><br />
+        @if (!string.IsNullOrEmpty(Model.imagen))
+        {
+            <img src="@Model.imagen" width="120" class="img-thumbnail" />
+        }
+        else
+        {
+            <div class="alert alert-info" style="width: 120px; text-align: center;">
+                Sin imagen
+            </div>
+        }
+    </div>
+
+    <div>
+        <label>Nueva Imagen</label><br />
+        <input type="file" name="ArchivoImagen" class="form-control" />
     </div>
     <button type="submit" class="btn btn-warning">Actualizar</button>
 </form>
