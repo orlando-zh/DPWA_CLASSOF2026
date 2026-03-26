@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Data;
 
 namespace MVC.Models
 {
@@ -19,8 +18,11 @@ namespace MVC.Models
         public string Email { get; set; }
 
         [Required]
-        [StringLength(255)]
-        public string Password { get; set; }
+        public byte[] Password { get; set; }
+
+
+        [Required]
+        public string Salt { get; set; }
 
         [Required]
         public DateTime FechaRegistro { get; set; } = DateTime.Now;

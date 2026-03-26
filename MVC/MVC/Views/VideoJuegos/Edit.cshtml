@@ -3,32 +3,32 @@
 @* For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 
-<h2>Editar Videojuego</h2>
+<h2 class="text-primary">Editar Videojuego</h2>
 <form asp-action="Edit" method="post" enctype="multipart/form-data">
     <input type="hidden" asp-for="id" />
 
     <div>
-        <label>Titulo</label>
+        <label class="form-label-custom">Titulo</label>
         <input asp-for="Titulo" class="form-control" />
         <span asp-validation-for="Titulo"></span>
     </div>
     <div>
-        <label>Precio</label>
+        <label class="form-label-custom">Precio</label>
         <input asp-for="Precio" class="form-control" />
         <span asp-validation-for="Precio"></span>
     </div>
     <div>
-        <label>Categoría</label>
+        <label class="form-label-custom">Categoría</label>
         <input asp-for="Categoria" class="form-control" />
         <span asp-validation-for="Categoria"></span>
     </div>
     <div>
-        <label>Descripción</label>
+        <label class="form-label-custom">Descripción</label>
         <textarea asp-for="Descripcion" class="form-control"></textarea>
     </div>
 
     <div>
-        <label>Imagen Actual</label><br />
+        <label class="form-label-custom">Imagen Actual</label><br />
         @if (!string.IsNullOrEmpty(Model.imagen))
         {
             <img src="@Model.imagen" width="120" class="img-thumbnail" />
@@ -42,7 +42,7 @@
     </div>
 
     <div>
-        <label>Nueva Imagen</label><br />
+        <label class="form-label-custom">Nueva Imagen</label><br />
         <input type="file" name="ArchivoImagen" class="form-control" />
     </div>
     <button type="submit" class="btn btn-warning">Actualizar</button>

@@ -3,31 +3,31 @@
 @* For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 
-<h2>Crear Videojuego</h2>
+<h2 class="text-primary">Crear Videojuego</h2>
 <form asp-action="Create" method="post" enctype="multipart/form-data">
     <div>
-        <label>Titulo</label>
+        <label class="form-label-custom">Titulo</label>
         <input asp-for="Titulo" class="form-control" />
         <span asp-validation-for="Titulo"></span>
     </div>
     <div>
-        <label>Precio</label>
+        <label class="form-label-custom">Precio</label>
         <input asp-for="Precio" class="form-control" />
         <div asp-validation-summary="All" class="text-danger"></div>
         <span asp-validation-for="Precio"></span>
     </div>
     <div>
-        <label>Categoría</label>
+        <label class="form-label-custom">Categoría</label>
         <input asp-for="Categoria" class="form-control" />
         <span asp-validation-for="Categoria"></span>
     </div>
     <div>
-        <label>Descripción</label>
+        <label class="form-label-custom">Descripción</label>
         <textarea asp-for="Descripcion" class="form-control"></textarea>
     </div>
 
     <div>
-        <label>Imagen</label>
+        <label class="form-label-custom">Imagen</label>
         <input type="file" name="ArchivoImagen" class="form-control" />
     </div>
     <button type="submit" class="btn btn-primary">Guardar</button>
