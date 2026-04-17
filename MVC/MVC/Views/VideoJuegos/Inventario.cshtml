@@ -1,0 +1,57 @@
+﻿@model IEnumerable<MVC.Models.VideoJuego>
+@{
+    ViewData["Title"] = "Inventario";
+}
+
+<div class="gs-page-header">
+    <h2 class="gs-page-title"><i class="fa-solid fa-boxes-stacked me-2" style="color:var(--accent);"></i>Inventario</h2>
+    <a asp-action="Create" class="btn-gs-primary">
+        <i class="fa-solid fa-plus me-2"></i>Agregar juego
+    </a>
+</div>
+
+<div class="gs-card">
+    <table class="gs-table">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Título</th>
+                <th>Categoría</th>
+                <th>Precio</th>
+                <th style="text-align:center;">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td style="width:60px;">
+                        <img src="@item.imagen" width="46" height="46"
+                             style="object-fit:cover; border-radius:6px; border:1px solid var(--border);" />
+                    </td>
+                    <td style="font-weight:600;">@item.Titulo</td>
+                    <td><span class="badge-category">@item.Categoria?.Nombre</span></td>
+                    <td style="color:var(--success); font-weight:700; font-family:'Rajdhani',sans-serif;">$@item.Precio</td>
+                    <td style="text-align:center;">
+                        <div class="d-flex gap-2 justify-content-center">
+                            <a asp-action="Edit" asp-route-id="@item.id" class="btn-gs-edit" style="font-size:0.8rem; padding:0.3rem 0.75rem;">
+                                <i class="fa-solid fa-pen"></i>
+                            </a>
+                            <a asp-action="Delete" asp-route-id="@item.id" class="btn-gs-danger" style="font-size:0.8rem; padding:0.3rem 0.75rem;">
+                                <i class="fa-solid fa-trash"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            }
+            @if (!Model.Any())
+            {
+                <tr>
+                    <td colspan="5" style="text-align:center; color:var(--muted); padding:2rem;">
+                        No hay juegos en el inventario.
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

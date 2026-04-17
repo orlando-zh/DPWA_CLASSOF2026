@@ -1,0 +1,60 @@
+﻿@model IEnumerable<MVC.Models.Promocion>
+@{
+    ViewData["Title"] = "Promociones";
+}
+
+<div class="gs-page-header">
+    <h2 class="gs-page-title"><i class="fa-solid fa-tag me-2" style="color:var(--accent2);"></i>Promociones</h2>
+    <a asp-action="Create" class="btn-gs-primary">
+        <i class="fa-solid fa-plus me-2"></i>Nueva promoción
+    </a>
+</div>
+
+<div class="gs-card">
+    <table class="gs-table">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Descuento</th>
+                <th>Vigencia</th>
+                <th style="text-align:center;">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td style="font-weight:600;">@item.Nombre</td>
+                    <td><span class="badge-promo" style="font-size:0.85rem; padding:0.3rem 0.7rem;">-@item.PorcentajeDescuento%</span></td>
+                    <td style="color:var(--muted); font-size:0.88rem;">
+                        @item.FechaInicio.ToShortDateString() — @item.FechaFin.ToShortDateString()
+                    </td>
+                    <td style="text-align:center;">
+                        <div class="d-flex gap-2 justify-content-center">
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn-gs-edit" style="font-size:0.8rem; padding:0.3rem 0.75rem;">
+                                <i class="fa-solid fa-pen"></i>
+                            </a>
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn-gs-danger" style="font-size:0.8rem; padding:0.3rem 0.75rem;">
+                                <i class="fa-solid fa-trash"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            }
+            @if (!Model.Any())
+            {
+                <tr>
+                    <td colspan="4" style="text-align:center; color:var(--muted); padding:2rem;">
+                        No hay promociones registradas.
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div style="margin-top:1rem;">
+    <a asp-controller="Account" asp-action="Dashboard" class="btn-gs-secondary" style="font-size:0.85rem; padding:0.4rem 1rem;">
+        <i class="fa-solid fa-chevron-left me-1"></i>Volver al Dashboard
+    </a>
+</div>

@@ -1,93 +1,119 @@
 ﻿@model IEnumerable<MVC.Models.VideoJuego>
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Inicio";
 }
 
-
-
-
-<div class="container mt-5">
-    <div class="row text-center mb-5">
-
-        <!-- CATEGORÍAS -->
-        <div class="col-md-3 mb-3">
-            <div class="feature-card">
-                <i class="fas fa-gamepad"></i>
-                <h5>Categorías</h5>
-                <p>Explora por tipo de juego</p>
-            </div>
+<!-- HERO -->
+<div style="background: linear-gradient(135deg, #161922 0%, #1e2330 60%, #0d0f14 100%); border: 1px solid #2a3040; border-radius: 14px; padding: 3.5rem 2rem; margin-bottom: 2.5rem; position: relative; overflow: hidden;">
+    <div style="position:absolute; top:-60px; right:-60px; width:300px; height:300px; border-radius:50%; background: radial-gradient(circle, rgba(240,165,0,0.08) 0%, transparent 70%); pointer-events:none;"></div>
+    <div class="text-center" style="position:relative; z-index:1;">
+        <p style="color: var(--accent); font-size:0.8rem; font-weight:700; text-transform:uppercase; letter-spacing:0.15em; margin-bottom:0.75rem;">
+            <i class="fa-solid fa-gamepad me-2"></i>Bienvenido a GameStore
+        </p>
+        <h1 style="font-family:'Rajdhani',sans-serif; font-size:clamp(2rem,5vw,3.5rem); font-weight:700; color:#e8eaf0; line-height:1.1; margin-bottom:1rem;">
+            Los mejores títulos,<br><span style="color:var(--accent);">a los mejores precios.</span>
+        </h1>
+        <p style="color: var(--muted); font-size:1rem; margin-bottom:1.75rem;">
+            Explora nuestro catálogo con cientos de juegos para todas las plataformas.
+        </p>
+        <div class="d-flex gap-3 justify-content-center flex-wrap">
+            <a asp-controller="Home" asp-action="Catalogo" class="btn-gs-primary" style="font-size:1rem; padding:0.65rem 1.75rem;">
+                <i class="fa-solid fa-store me-2"></i>Ver Tienda
+            </a>
+            <a asp-controller="Home" asp-action="Promociones" class="btn-gs-secondary" style="font-size:1rem; padding:0.65rem 1.75rem;">
+                <i class="fa-solid fa-fire me-2" style="color:var(--accent2);"></i>Ver Ofertas
+            </a>
         </div>
-
-        <!-- MÁS VENDIDOS -->
-        <div class="col-md-3 mb-3">
-            <div class="feature-card">
-                <i class="fas fa-fire"></i>
-                <h5>Más Vendidos</h5>
-                <p>Los juegos más populares</p>
-            </div>
-        </div>
-
-        <!-- NUEVOS -->
-        <div class="col-md-3 mb-3">
-            <div class="feature-card">
-                <i class="fas fa-star"></i>
-                <h5>Nuevos Juegos</h5>
-                <p>Lo último en la tienda</p>
-            </div>
-        </div>
-
-        <!-- PROMOCIONES -->
-        <div class="col-md-3 mb-3">
-            <div class="feature-card">
-                <i class="fas fa-tags"></i>
-                <h5>Promociones</h5>
-                <p>Ofertas especiales</p>
-            </div>
-        </div>
-
     </div>
+</div>
 
+<!-- QUICK ACCESS -->
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+        <a asp-controller="Home" asp-action="Catalogo" style="text-decoration:none;">
+            <div class="gs-card p-3 text-center" style="cursor:pointer;">
+                <i class="fa-solid fa-store fa-2x mb-2" style="color:var(--info);"></i>
+                <div style="font-family:'Rajdhani',sans-serif; font-weight:600; font-size:1rem; color:var(--text);">Catálogo</div>
+                <div style="font-size:0.78rem; color:var(--muted);">Todos los juegos</div>
+            </div>
+        </a>
+    </div>
+    <div class="col-6 col-md-3">
+        <a asp-controller="Home" asp-action="Promociones" style="text-decoration:none;">
+            <div class="gs-card p-3 text-center" style="cursor:pointer;">
+                <i class="fa-solid fa-fire fa-2x mb-2" style="color:var(--accent2);"></i>
+                <div style="font-family:'Rajdhani',sans-serif; font-weight:600; font-size:1rem; color:var(--text);">Ofertas</div>
+                <div style="font-size:0.78rem; color:var(--muted);">Descuentos activos</div>
+            </div>
+        </a>
+    </div>
+    <div class="col-6 col-md-3">
+        <a asp-controller="Home" asp-action="Catalogo" asp-route-categoriaId="4" style="text-decoration:none;">
+            <div class="gs-card p-3 text-center" style="cursor:pointer;">
+                <i class="fa-solid fa-crosshairs fa-2x mb-2" style="color:var(--accent);"></i>
+                <div style="font-family:'Rajdhani',sans-serif; font-weight:600; font-size:1rem; color:var(--text);">Acción</div>
+                <div style="font-size:0.78rem; color:var(--muted);">Adrenalina pura</div>
+            </div>
+        </a>
+    </div>
+    <div class="col-6 col-md-3">
+        <a asp-controller="Home" asp-action="Contacts" style="text-decoration:none;">
+            <div class="gs-card p-3 text-center" style="cursor:pointer;">
+                <i class="fa-solid fa-envelope fa-2x mb-2" style="color:var(--success);"></i>
+                <div style="font-family:'Rajdhani',sans-serif; font-weight:600; font-size:1rem; color:var(--text);">Contacto</div>
+                <div style="font-size:0.78rem; color:var(--muted);">Estamos disponibles</div>
+            </div>
+        </a>
+    </div>
+</div>
 
-    <h2 class="text-center fw-bold mb-4" style="color: #FFD700;"> Videojuegos Disponibles</h2>
-    <div class="row g-4">
-        @foreach (var juego in Model)
-        {
-            <div class="col-md-6 col-lg-4 col-xl-3">
-                <div class="card game-card h-100">
+<!-- FEATURED GAMES -->
+<div class="gs-page-header" style="margin-top:2rem;">
+    <h2 class="gs-page-title"><i class="fa-solid fa-star me-2" style="color:var(--accent);"></i>Juegos Destacados</h2>
+    <a asp-controller="Home" asp-action="Catalogo" class="btn-gs-secondary" style="font-size:0.85rem; padding:0.4rem 1rem;">Ver todos</a>
+</div>
 
-                    <!-- 🔴 BADGE SUPERIOR -->
-                    <div class="badge-top">+12</div>
-
-                    <!-- ❤️ FAVORITO -->
-                    <div class="favorite">
-                        <i class="fa-regular fa-heart"></i>
+<div class="row g-3">
+    @foreach (var juego in Model)
+    {
+        <div class="col-sm-6 col-lg-4 col-xl-3">
+            <div class="gs-card h-100 d-flex flex-column">
+                <div style="position:relative; overflow:hidden;">
+                    <a asp-controller="Home" asp-action="Details" asp-route-id="@juego.id">
+                        <img src="@juego.imagen" alt="@juego.Titulo"
+                             style="width:100%; height:200px; object-fit:cover; display:block; transition:transform 0.3s;"
+                             onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'" />
+                    </a>
+                    <div style="position:absolute; top:8px; left:8px;">
+                        <span class="badge-age">+@juego.EdadMinima</span>
                     </div>
-
-                    <!-- IMAGEN -->
-                    <img src="@juego.imagen"
-                         class="card-img-top game-img" />
-
-                    <div class="card-body d-flex flex-column">
-
-                        <!-- TÍTULO -->
-                        <h5 class="card-title fw-bold">
-                            @juego.Titulo
-                        </h5>
-
-
-                        <!-- PRECIO -->
-                        <h4 class="price mt-2">
-                            $@juego.Precio
-                        </h4>
-
-                        <!-- CATEGORÍA -->
-                        <div class="d-flex align-items-center mt-auto">
-                            <i class="fa-solid fa-gamepad me-2 text-warning"></i>
-                            <span class="text-muted">@juego.Categoria</span>
+                    @if (juego.PromocionId != null)
+                    {
+                        <div style="position:absolute; top:8px; right:8px;">
+                            <span class="badge-promo">PROMO</span>
                         </div>
-
+                    }
+                </div>
+                <div style="padding:1rem; flex:1; display:flex; flex-direction:column;">
+                    <span class="badge-category mb-2" style="display:inline-block; width:fit-content;">@(juego.Categoria?.Nombre ?? "Sin categoría")</span>
+                    <a asp-controller="Home" asp-action="Details" asp-route-id="@juego.id"
+                       style="text-decoration:none; color:var(--text); font-family:'Rajdhani',sans-serif; font-size:1.05rem; font-weight:600; display:block; margin-bottom:auto; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                        @juego.Titulo
+                    </a>
+                    <div style="margin-top:0.75rem; display:flex; justify-content:space-between; align-items:center;">
+                        <span style="color:var(--success); font-weight:700; font-family:'Rajdhani',sans-serif; font-size:1.2rem;">$@juego.Precio</span>
+                        <a asp-controller="Home" asp-action="Details" asp-route-id="@juego.id" class="btn-gs-edit" style="font-size:0.78rem; padding:0.3rem 0.75rem;">Ver más</a>
                     </div>
                 </div>
             </div>
-        }
-    </div>
+        </div>
+    }
+
+    @if (!Model.Any())
+    {
+        <div class="col-12 text-center py-5">
+            <i class="fa-solid fa-gamepad fa-3x mb-3" style="color:var(--muted);"></i>
+            <p style="color:var(--muted);">No hay juegos disponibles por el momento.</p>
+        </div>
+    }
+</div>

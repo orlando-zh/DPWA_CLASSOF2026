@@ -1,0 +1,60 @@
+﻿@model MVC.Models.VideoJuego
+@{
+    ViewData["Title"] = Model.Titulo;
+    decimal precioFinal = Model.Precio;
+    if (Model.Promocion != null)
+    {
+        precioFinal = Model.Precio - (Model.Precio * Model.Promocion.PorcentajeDescuento / 100);
+    }
+}
+
+<!-- Breadcrumb -->
+<nav style="margin-bottom:1.5rem;">
+    <a asp-action="Catalogo" style="color:var(--muted); text-decoration:none; font-size:0.85rem;">
+        <i class="fa-solid fa-chevron-left me-1"></i>Tienda
+    </a>
+    <span style="color:var(--border); margin:0 0.5rem;">/</span>
+    <span style="color:var(--text); font-size:0.85rem;">@Model.Titulo</span>
+</nav>
+
+<div class="row g-4">
+    <!-- Imagen -->
+    <div class="col-md-5">
+        <div style="border-radius:12px; overflow:hidden; border:1px solid var(--border); position:relative;">
+            <img src="@Model.imagen" alt="@Model.Titulo" style="width:100%; display:block; object-fit:cover; min-height:380px;" />
+            <div style="position:absolute; top:12px; left:12px;"><span class="badge-age" style="font-size:0.85rem; padding:0.3rem 0.7rem;">+@Model.EdadMinima</span></div>
+        </div>
+    </div>
+
+    <!-- Info -->
+    <div class="col-md-7">
+        <span class="badge-category mb-3" style="display:inline-block;">@Model.Categoria?.Nombre</span>
+        <h1 style="font-family:'Rajdhani',sans-serif; font-size:2.2rem; font-weight:700; color:var(--text); line-height:1.1; margin-bottom:1rem;">@Model.Titulo</h1>
+        <p style="color:var(--muted); line-height:1.7; margin-bottom:1.5rem;">@Model.Descripcion</p>
+
+        <!-- Precio -->
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:1.25rem; margin-bottom:1.5rem;">
+            @if (Model.Promocion != null)
+            {
+                <div style="font-size:0.9rem; color:var(--muted); text-decoration:line-through; margin-bottom:0.3rem;">$@Model.Precio</div>
+                <div style="display:flex; align-items:center; gap:0.75rem;">
+                    <span style="font-family:'Rajdhani',sans-serif; font-size:2rem; font-weight:700; color:var(--success);">$@precioFinal</span>
+                    <span class="badge-promo" style="font-size:0.85rem; padding:0.3rem 0.7rem;">-@Model.Promocion.PorcentajeDescuento% OFF</span>
+                </div>
+            }
+            else
+            {
+                <span style="font-family:'Rajdhani',sans-serif; font-size:2rem; font-weight:700; color:var(--success);">$@Model.Precio</span>
+            }
+        </div>
+
+        <div class="d-flex gap-3 flex-wrap">
+            <button class="btn-gs-primary" style="font-size:1rem; padding:0.65rem 1.75rem;">
+                <i class="fa-solid fa-cart-shopping me-2"></i>Adquirir ahora
+            </button>
+            <a asp-action="Catalogo" class="btn-gs-secondary" style="font-size:1rem; padding:0.65rem 1.5rem;">
+                Seguir explorando
+            </a>
+        </div>
+    </div>
+</div>

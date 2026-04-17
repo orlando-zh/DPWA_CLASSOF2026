@@ -1,0 +1,54 @@
+﻿@model IEnumerable<MVC.Models.VideoJuego>
+@{
+    ViewData["Title"] = "Ofertas";
+}
+
+<div class="gs-page-header">
+    <h2 class="gs-page-title">
+        <i class="fa-solid fa-fire me-2" style="color:var(--accent2);"></i>Ofertas Activas
+    </h2>
+    <a asp-action="Catalogo" class="btn-gs-secondary" style="font-size:0.85rem; padding:0.4rem 1rem;">Ver catálogo completo</a>
+</div>
+
+<div class="row g-3">
+    @foreach (var juego in Model)
+    {
+        <div class="col-sm-6 col-lg-4 col-xl-3">
+            <div class="gs-card h-100 d-flex flex-column">
+                <div style="position:relative; overflow:hidden;">
+                    <a asp-action="Details" asp-route-id="@juego.id">
+                        <img src="@juego.imagen" alt="@juego.Titulo"
+                             style="width:100%; height:200px; object-fit:cover; display:block; transition:transform 0.3s;"
+                             onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'" />
+                    </a>
+                    <div style="position:absolute; top:8px; right:8px;">
+                        <span class="badge-promo" style="font-size:0.85rem; padding:0.3rem 0.7rem;">-@juego.Promocion?.PorcentajeDescuento%</span>
+                    </div>
+                </div>
+                <div style="padding:1rem; flex:1; display:flex; flex-direction:column;">
+                    <a asp-action="Details" asp-route-id="@juego.id"
+                       style="text-decoration:none; color:var(--text); font-family:'Rajdhani',sans-serif; font-size:1.05rem; font-weight:600; display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:0.5rem;">
+                        @juego.Titulo
+                    </a>
+                    <div style="display:flex; align-items:center; gap:0.6rem; margin-bottom:auto;">
+                        <span style="color:var(--muted); text-decoration:line-through; font-size:0.85rem;">$@juego.Precio</span>
+                        <span style="color:var(--success); font-family:'Rajdhani',sans-serif; font-size:1.2rem; font-weight:700;">
+                            $@(juego.Precio - (juego.Precio * (juego.Promocion?.PorcentajeDescuento ?? 0) / 100))
+                        </span>
+                    </div>
+                    <a asp-action="Details" asp-route-id="@juego.id" class="btn-gs-primary mt-3" style="text-align:center; width:100%; padding:0.5rem;">
+                        Ver oferta
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (!Model.Any())
+    {
+        <div class="col-12 text-center py-5">
+            <i class="fa-solid fa-tag fa-3x mb-3" style="color:var(--muted);"></i>
+            <p style="color:var(--muted);">No hay ofertas activas en este momento.</p>
+        </div>
+    }
+</div>

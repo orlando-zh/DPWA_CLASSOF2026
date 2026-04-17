@@ -1,0 +1,36 @@
+﻿@model MVC.Models.Categoria
+@{
+    ViewData["Title"] = "Nueva Categoría";
+}
+
+<div style="max-width:520px;">
+    <div class="gs-page-header">
+        <h2 class="gs-page-title"><i class="fa-solid fa-tag me-2" style="color:var(--accent);"></i>Nueva Categoría</h2>
+        <a asp-action="Index" class="btn-gs-secondary" style="font-size:0.85rem; padding:0.4rem 1rem;">
+            <i class="fa-solid fa-chevron-left me-1"></i>Categorías
+        </a>
+    </div>
+
+    <div class="gs-card" style="padding:1.75rem;">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3" style="font-size:0.85rem;"></div>
+
+            <div class="gs-form-group">
+                <label class="gs-label">Nombre</label>
+                <input asp-for="Nombre" class="gs-input" />
+                <span asp-validation-for="Nombre" style="color:var(--danger); font-size:0.8rem;"></span>
+            </div>
+
+            <div class="gs-form-group">
+                <label class="gs-label">Descripción</label>
+                <textarea asp-for="Descripcion" class="gs-input" rows="3" style="resize:vertical;"></textarea>
+                <span asp-validation-for="Descripcion" style="color:var(--danger); font-size:0.8rem;"></span>
+            </div>
+
+            <div class="d-flex gap-3">
+                <button type="submit" class="btn-gs-primary" style="padding:0.6rem 2rem;">Guardar</button>
+                <a asp-action="Index" class="btn-gs-secondary" style="padding:0.6rem 1.5rem;">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>

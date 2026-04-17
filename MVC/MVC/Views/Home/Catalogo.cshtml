@@ -1,0 +1,97 @@
+﻿@model IEnumerable<MVC.Models.VideoJuego>
+@{
+    ViewData["Title"] = "Catálogo";
+}
+
+<div class="gs-page-header">
+    <h2 class="gs-page-title">
+        <i class="fa-solid fa-store me-2" style="color:var(--accent);"></i>
+        @(ViewBag.CategoriaSeleccionada ?? "Todos los juegos")
+    </h2>
+</div>
+
+<div class="row g-4">
+    <!-- Sidebar filtros -->
+    <div class="col-lg-2 col-md-3">
+        <div style="font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--muted); margin-bottom:0.75rem;">Género</div>
+        <nav style="display:flex; flex-direction:column; gap:2px;">
+            <a asp-action="Catalogo"
+               style="padding:0.45rem 0.75rem; border-radius:6px; font-size:0.88rem; text-decoration:none; transition:background 0.15s;
+                      background:@(ViewBag.CategoriaSeleccionada == null ? "var(--surface2)" : "transparent");
+                      color:@(ViewBag.CategoriaSeleccionada == null ? "var(--accent)" : "var(--text)");">
+                Todos
+            </a>
+            @foreach (var cat in (IEnumerable<MVC.Models.Categoria>)ViewBag.Categorias)
+            {
+                <a asp-action="Catalogo" asp-route-categoriaId="@cat.Id"
+                   style="padding:0.45rem 0.75rem; border-radius:6px; font-size:0.88rem; text-decoration:none; transition:background 0.15s;
+                              background:@(ViewBag.CategoriaSeleccionada == cat.Nombre ? "var(--surface2)" : "transparent");
+                              color:@(ViewBag.CategoriaSeleccionada == cat.Nombre ? "var(--accent)" : "var(--muted)");"
+                   onmouseover="this.style.background='var(--surface2)'; this.style.color='var(--text)';"
+                   onmouseout="this.style.background='@(ViewBag.CategoriaSeleccionada == cat.Nombre ? "var(--surface2)" : "transparent")'; this.style.color='@(ViewBag.CategoriaSeleccionada == cat.Nombre ? "var(--accent)" : "var(--muted)")';">
+                    @cat.Nombre
+                </a>
+            }
+        </nav>
+    </div>
+
+    <!-- Contenido principal -->
+    <div class="col-lg-10 col-md-9">
+        <!-- Barra de búsqueda -->
+        <form asp-action="Catalogo" method="get" class="d-flex mb-4 gap-2">
+            <input type="text" name="buscar" value="@ViewBag.Busqueda"
+                   class="gs-input" placeholder="Buscar juego..." style="max-width:340px;" />
+            <button type="submit" class="btn-gs-primary" style="padding:0.5rem 1rem;">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+            @if (ViewBag.Busqueda != null || ViewBag.CategoriaSeleccionada != null)
+            {
+                <a asp-action="Catalogo" class="btn-gs-secondary" style="padding:0.5rem 0.9rem; font-size:0.85rem;">Limpiar</a>
+            }
+        </form>
+
+        <div class="row g-3">
+            @foreach (var juego in Model)
+            {
+                <div class="col-sm-6 col-xl-4">
+                    <div class="gs-card h-100 d-flex flex-column">
+                        <div style="position:relative; overflow:hidden;">
+                            <a asp-action="Details" asp-route-id="@juego.id">
+                                <img src="@juego.imagen" alt="@juego.Titulo"
+                                     style="width:100%; height:190px; object-fit:cover; display:block; transition:transform 0.3s;"
+                                     onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'" />
+                            </a>
+                            <div style="position:absolute; top:8px; left:8px;"><span class="badge-age">+@juego.EdadMinima</span></div>
+                            @if (juego.PromocionId != null)
+                            {
+                                <div style="position:absolute; top:8px; right:8px;"><span class="badge-promo">PROMO</span></div>
+                            }
+                        </div>
+                        <div style="padding:0.9rem; flex:1; display:flex; flex-direction:column;">
+                            <span class="badge-category mb-2" style="display:inline-block; width:fit-content;">@juego.Categoria?.Nombre</span>
+                            <a asp-action="Details" asp-route-id="@juego.id"
+                               style="text-decoration:none; color:var(--text); font-family:'Rajdhani',sans-serif; font-size:1rem; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:block; margin-bottom:auto;">
+                                @juego.Titulo
+                            </a>
+                            <div style="margin-top:0.75rem; display:flex; justify-content:space-between; align-items:center;">
+                                <span style="color:var(--success); font-weight:700; font-family:'Rajdhani',sans-serif; font-size:1.15rem;">$@juego.Precio</span>
+                                <a asp-action="Details" asp-route-id="@juego.id" class="btn-gs-primary" style="font-size:0.78rem; padding:0.3rem 0.8rem;">
+                                    <i class="fa-solid fa-cart-plus me-1"></i>Ver
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            @if (!Model.Any())
+            {
+                <div class="col-12 text-center py-5">
+                    <i class="fa-solid fa-face-frown fa-3x mb-3" style="color:var(--muted);"></i>
+                    <p style="color:var(--muted);">No se encontraron juegos con esos criterios.</p>
+                    <a asp-action="Catalogo" class="btn-gs-secondary mt-2">Limpiar filtros</a>
+                </div>
+            }
+        </div>
+    </div>
+</div>

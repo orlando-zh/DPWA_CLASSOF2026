@@ -1,26 +1,31 @@
-﻿@model MVC.Models.VideoJuego
+﻿@model MVC.Models.Promocion
 @{
-    ViewData["Title"] = "Eliminar Juego";
+    ViewData["Title"] = "Eliminar Promoción";
 }
 
 <div style="max-width:480px; margin:0 auto; text-align:center; padding-top:2rem;">
     <div class="gs-card" style="padding:2rem;">
         <i class="fa-solid fa-triangle-exclamation fa-2x mb-3" style="color:var(--danger);"></i>
-        <h3 style="font-family:'Rajdhani',sans-serif; font-weight:700; color:var(--text); margin-bottom:0.5rem;">¿Eliminar este juego?</h3>
+        <h3 style="font-family:'Rajdhani',sans-serif; font-weight:700; color:var(--text); margin-bottom:0.5rem;">¿Eliminar esta promoción?</h3>
         <p style="color:var(--muted); font-size:0.9rem; margin-bottom:1.5rem;">Esta acción no se puede deshacer.</p>
 
         <div style="background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:1rem; margin-bottom:1.75rem; text-align:left;">
-            <div style="font-weight:600; color:var(--text); margin-bottom:0.25rem;">@Model.Titulo</div>
-            <div style="color:var(--success); font-family:'Rajdhani',sans-serif; font-weight:700;">$@Model.Precio</div>
+            <div style="font-weight:600; color:var(--text); margin-bottom:0.25rem;">@Model.Nombre</div>
+            <div style="margin-bottom:0.25rem;">
+                <span class="badge-promo">-@Model.PorcentajeDescuento%</span>
+            </div>
+            <div style="color:var(--muted); font-size:0.85rem;">
+                @Model.FechaInicio.ToShortDateString() — @Model.FechaFin.ToShortDateString()
+            </div>
         </div>
 
         <form asp-action="Delete">
-            <input type="hidden" asp-for="id" />
+            <input type="hidden" asp-for="Id" />
             <div class="d-flex gap-3 justify-content-center">
                 <button type="submit" class="btn-gs-danger" style="padding:0.6rem 2rem; font-size:0.95rem;">
                     <i class="fa-solid fa-trash me-2"></i>Eliminar
                 </button>
-                <a asp-action="Inventario" class="btn-gs-secondary" style="padding:0.6rem 1.5rem; font-size:0.95rem;">Cancelar</a>
+                <a asp-action="Index" class="btn-gs-secondary" style="padding:0.6rem 1.5rem; font-size:0.95rem;">Cancelar</a>
             </div>
         </form>
     </div>

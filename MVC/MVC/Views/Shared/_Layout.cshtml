@@ -4,101 +4,418 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - GameStore</title>
-
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root {
+            --bg: #0d0f14;
+            --surface: #161922;
+            --surface2: #1e2330;
+            --border: #2a3040;
+            --accent: #f0a500;
+            --accent2: #e05c2a;
+            --text: #e8eaf0;
+            --muted: #6b7280;
+            --success: #22c55e;
+            --danger: #ef4444;
+            --info: #38bdf8;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        h1, h2, h3, h4, h5, h6, .brand {
+            font-family: 'Rajdhani', sans-serif;
+            letter-spacing: 0.02em;
+        }
+
+        /* NAV */
+        .gs-nav {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 0.6rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+            .gs-nav .navbar-brand {
+                font-family: 'Rajdhani', sans-serif;
+                font-size: 1.6rem;
+                font-weight: 700;
+                color: var(--accent) !important;
+                letter-spacing: 0.05em;
+                text-decoration: none;
+            }
+
+            .gs-nav .nav-link {
+                color: var(--text) !important;
+                font-size: 0.9rem;
+                font-weight: 500;
+                padding: 0.4rem 0.85rem !important;
+                border-radius: 6px;
+                transition: background 0.15s, color 0.15s;
+            }
+
+                .gs-nav .nav-link:hover {
+                    background: var(--surface2);
+                    color: var(--accent) !important;
+                }
+
+                .gs-nav .nav-link.admin-link {
+                    color: var(--accent) !important;
+                }
+
+            .gs-nav .btn-register {
+                background: var(--accent);
+                color: #000 !important;
+                font-weight: 700;
+                font-size: 0.85rem;
+                padding: 0.4rem 1rem;
+                border-radius: 6px;
+                text-decoration: none;
+                transition: opacity 0.15s;
+            }
+
+                .gs-nav .btn-register:hover {
+                    opacity: 0.85;
+                }
+
+            .gs-nav .user-greeting {
+                color: var(--accent);
+                font-size: 0.9rem;
+                font-weight: 600;
+                padding: 0.4rem 0.85rem;
+            }
+
+        .navbar-toggler {
+            border-color: var(--border);
+        }
+
+        .navbar-toggler-icon {
+            filter: invert(0.8);
+        }
+
+        /* MAIN */
+        .gs-main {
+            flex: 1;
+            padding-top: 1.5rem;
+            padding-bottom: 3rem;
+        }
+
+        /* FOOTER */
+        .gs-footer {
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+            text-align: center;
+            padding: 1rem;
+            font-size: 0.8rem;
+            color: var(--muted);
+        }
+
+        /* CARDS */
+        .gs-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: border-color 0.2s, transform 0.2s;
+        }
+
+            .gs-card:hover {
+                border-color: var(--accent);
+                transform: translateY(-3px);
+            }
+
+        /* BUTTONS */
+        .btn-gs-primary {
+            background: var(--accent);
+            color: #000;
+            font-weight: 700;
+            border: none;
+            border-radius: 7px;
+            padding: 0.5rem 1.2rem;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1rem;
+            letter-spacing: 0.03em;
+            transition: opacity 0.15s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+            .btn-gs-primary:hover {
+                opacity: 0.85;
+                color: #000;
+            }
+
+        .btn-gs-secondary {
+            background: var(--surface2);
+            color: var(--text);
+            font-weight: 500;
+            border: 1px solid var(--border);
+            border-radius: 7px;
+            padding: 0.5rem 1.2rem;
+            transition: border-color 0.15s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+            .btn-gs-secondary:hover {
+                border-color: var(--accent);
+                color: var(--accent);
+            }
+
+        .btn-gs-danger {
+            background: transparent;
+            color: var(--danger);
+            border: 1px solid var(--danger);
+            border-radius: 7px;
+            padding: 0.4rem 1rem;
+            text-decoration: none;
+            display: inline-block;
+            transition: background 0.15s;
+        }
+
+            .btn-gs-danger:hover {
+                background: var(--danger);
+                color: #fff;
+            }
+
+        .btn-gs-edit {
+            background: transparent;
+            color: var(--accent);
+            border: 1px solid var(--accent);
+            border-radius: 7px;
+            padding: 0.4rem 1rem;
+            text-decoration: none;
+            display: inline-block;
+            transition: background 0.15s;
+        }
+
+            .btn-gs-edit:hover {
+                background: var(--accent);
+                color: #000;
+            }
+
+        /* TABLES */
+        .gs-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+            .gs-table th {
+                background: var(--surface2);
+                color: var(--muted);
+                font-size: 0.75rem;
+                text-transform: uppercase;
+                letter-spacing: 0.08em;
+                padding: 0.75rem 1rem;
+                border-bottom: 1px solid var(--border);
+                font-weight: 600;
+            }
+
+            .gs-table td {
+                padding: 0.85rem 1rem;
+                border-bottom: 1px solid var(--border);
+                vertical-align: middle;
+                font-size: 0.9rem;
+            }
+
+            .gs-table tr:last-child td {
+                border-bottom: none;
+            }
+
+            .gs-table tr:hover td {
+                background: var(--surface2);
+            }
+
+        /* FORMS */
+        .gs-form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .gs-label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            margin-bottom: 0.4rem;
+        }
+
+        .gs-input {
+            width: 100%;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 7px;
+            color: var(--text);
+            padding: 0.55rem 0.9rem;
+            font-size: 0.95rem;
+            transition: border-color 0.15s;
+            outline: none;
+            font-family: 'Inter', sans-serif;
+        }
+
+            .gs-input:focus {
+                border-color: var(--accent);
+            }
+
+            .gs-input::placeholder {
+                color: var(--muted);
+            }
+
+        /* BADGES */
+        .badge-category {
+            background: rgba(56,189,248,0.15);
+            color: var(--info);
+            border: 1px solid rgba(56,189,248,0.3);
+            border-radius: 4px;
+            font-size: 0.75rem;
+            padding: 0.2rem 0.6rem;
+            font-weight: 600;
+        }
+
+        .badge-age {
+            background: rgba(240,165,0,0.15);
+            color: var(--accent);
+            border: 1px solid rgba(240,165,0,0.3);
+            border-radius: 4px;
+            font-size: 0.7rem;
+            padding: 0.15rem 0.5rem;
+            font-weight: 700;
+        }
+
+        .badge-promo {
+            background: var(--accent2);
+            color: #fff;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            padding: 0.2rem 0.5rem;
+            font-weight: 700;
+        }
+
+        /* PAGE HEADER */
+        .gs-page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .gs-page-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--text);
+            margin: 0;
+        }
+    </style>
 </head>
-
-<body class="bg-dark-custom">
-
-    <header>
-        <nav class="navbar navbar-expand-lg navbar-custom shadow">
-            <div class="container">
-
-                <a class="navbar-brand fw-bold text-warning" asp-controller="Home" asp-action="Index">
-                    GameStore
-                </a>
-
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuNavbar">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-
-                <div class="collapse navbar-collapse" id="menuNavbar">
-
-                    <ul class="navbar-nav me-auto">
+<body>
+    <nav class="gs-nav navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" asp-controller="Home" asp-action="Index">
+                <i class="fa-solid fa-gamepad me-2"></i>GameStore
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="menuNavbar">
+                <ul class="navbar-nav me-auto gap-1">
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Home" asp-action="Index">Inicio</a>
+                    </li>
+                    @if (Context.Session.GetString("Usuario") != null)
+                    {
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link admin-link" asp-controller="VideoJuegos" asp-action="Inventario">
+                                <i class="fa-solid fa-boxes-stacked me-1"></i>Inventario
+                            </a>
                         </li>
-
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Home" asp-action="Contacts">Contactos</a>
+                            <a class="nav-link admin-link" asp-controller="Categorias" asp-action="Index">
+                                <i class="fa-solid fa-tags me-1"></i>Categorías
+                            </a>
                         </li>
-
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="VideoJuegos" asp-action="Index">Lo Nuevo</a>
+                            <a class="nav-link admin-link" asp-controller="Promociones" asp-action="Index">
+                                <i class="fa-solid fa-tag me-1"></i>Promociones
+                            </a>
                         </li>
-                    </ul>
-
-                    <ul class="navbar-nav ms-auto">
-
-                        @if (Context.Session.GetString("Usuario") != null)
-                        {
-                            <li class="nav-item">
-                                <span class="nav-link text-warning fw-bold">
-                                    Hola, @Context.Session.GetString("Usuario")
-                                </span>
-                            </li>
-
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="Account" asp-action="Logout">
-                                    Cerrar sesión
-                                </a>
-                            </li>
-                        }
-                        else
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="Account" asp-action="Login">
-                                    Iniciar Sesión
-                                </a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a class="btn btn-accent ms-2"
-                                   asp-controller="Account" asp-action="Register">
-                                    Registrarse
-                                </a>
-                            </li>
-                        }
-
-                    </ul>
-
-                </div>
+                        <li class="nav-item">
+                            <a class="nav-link admin-link" asp-controller="Account" asp-action="Dashboard">
+                                <i class="fa-solid fa-chart-line me-1"></i>Dashboard
+                            </a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Home" asp-action="Catalogo">Tienda</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Home" asp-action="Promociones">Ofertas</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Home" asp-action="Contacts">Contacto</a>
+                        </li>
+                    }
+                </ul>
+                <ul class="navbar-nav ms-auto align-items-center gap-2">
+                    @if (Context.Session.GetString("Usuario") != null)
+                    {
+                        <li class="nav-item">
+                            <span class="user-greeting">
+                                <i class="fa-solid fa-circle-user me-1"></i>@Context.Session.GetString("Usuario")
+                            </span>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Account" asp-action="Logout">Cerrar sesión</a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Account" asp-action="Login">Iniciar sesión</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="btn-register" asp-controller="Account" asp-action="Register">Registrarse</a>
+                        </li>
+                    }
+                </ul>
             </div>
-        </nav>
-    </header>
+        </div>
+    </nav>
 
-
-    <section class="banner text-center text-white">
-    </section>
-
-    <div class="container mt-5">
-        <main role="main">
-            @RenderBody()
-        </main>
+    <div class="gs-main">
+        <div class="container">
+            <main role="main">
+                @RenderBody()
+            </main>
+        </div>
     </div>
 
-
-    <footer class="footer-custom text-center py-3 mt-5">
-        <div class="container">
-            &copy; 2026 - GameStore | Todos los derechos reservados
-        </div>
+    <footer class="gs-footer">
+        &copy; 2026 GameStore &mdash; Todos los derechos reservados
     </footer>
-
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-
 </body>
 </html>

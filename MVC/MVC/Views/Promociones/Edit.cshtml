@@ -1,0 +1,49 @@
+﻿@model MVC.Models.Promocion
+@{
+    ViewData["Title"] = "Editar Promoción";
+}
+
+<div style="max-width:520px;">
+    <div class="gs-page-header">
+        <h2 class="gs-page-title"><i class="fa-solid fa-pen me-2" style="color:var(--accent);"></i>Editar Promoción</h2>
+        <a asp-action="Index" class="btn-gs-secondary" style="font-size:0.85rem; padding:0.4rem 1rem;">
+            <i class="fa-solid fa-chevron-left me-1"></i>Promociones
+        </a>
+    </div>
+
+    <div class="gs-card" style="padding:1.75rem;">
+        <form asp-action="Edit">
+            <input type="hidden" asp-for="Id" />
+
+            <div class="gs-form-group">
+                <label class="gs-label">Nombre</label>
+                <input asp-for="Nombre" class="gs-input" />
+                <span asp-validation-for="Nombre" style="color:var(--danger); font-size:0.8rem;"></span>
+            </div>
+
+            <div class="gs-form-group">
+                <label class="gs-label">Porcentaje de descuento (%)</label>
+                <input asp-for="PorcentajeDescuento" type="number" min="0" max="100" step="0.01" class="gs-input" />
+                <span asp-validation-for="PorcentajeDescuento" style="color:var(--danger); font-size:0.8rem;"></span>
+            </div>
+
+            <div class="row g-3">
+                <div class="col-6 gs-form-group">
+                    <label class="gs-label">Fecha inicio</label>
+                    <input asp-for="FechaInicio" type="date" class="gs-input" />
+                    <span asp-validation-for="FechaInicio" style="color:var(--danger); font-size:0.8rem;"></span>
+                </div>
+                <div class="col-6 gs-form-group">
+                    <label class="gs-label">Fecha fin</label>
+                    <input asp-for="FechaFin" type="date" class="gs-input" />
+                    <span asp-validation-for="FechaFin" style="color:var(--danger); font-size:0.8rem;"></span>
+                </div>
+            </div>
+
+            <div class="d-flex gap-3 mt-1">
+                <button type="submit" class="btn-gs-primary" style="padding:0.6rem 2rem;">Actualizar</button>
+                <a asp-action="Index" class="btn-gs-secondary" style="padding:0.6rem 1.5rem;">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>

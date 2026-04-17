@@ -1,34 +1,68 @@
 ﻿@model MVC.Models.VideoJuego
+@{
+    ViewData["Title"] = "Nuevo Juego";
+}
 
-@* For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-
-<h2 class="text-primary">Crear Videojuego</h2>
-<form asp-action="Create" method="post" enctype="multipart/form-data">
-    <div>
-        <label class="form-label-custom">Titulo</label>
-        <input asp-for="Titulo" class="form-control" />
-        <span asp-validation-for="Titulo"></span>
-    </div>
-    <div>
-        <label class="form-label-custom">Precio</label>
-        <input asp-for="Precio" class="form-control" />
-        <div asp-validation-summary="All" class="text-danger"></div>
-        <span asp-validation-for="Precio"></span>
-    </div>
-    <div>
-        <label class="form-label-custom">Categoría</label>
-        <input asp-for="Categoria" class="form-control" />
-        <span asp-validation-for="Categoria"></span>
-    </div>
-    <div>
-        <label class="form-label-custom">Descripción</label>
-        <textarea asp-for="Descripcion" class="form-control"></textarea>
+<div style="max-width:680px;">
+    <div class="gs-page-header">
+        <h2 class="gs-page-title"><i class="fa-solid fa-plus me-2" style="color:var(--accent);"></i>Nuevo Juego</h2>
+        <a asp-action="Inventario" class="btn-gs-secondary" style="font-size:0.85rem; padding:0.4rem 1rem;">
+            <i class="fa-solid fa-chevron-left me-1"></i>Inventario
+        </a>
     </div>
 
-    <div>
-        <label class="form-label-custom">Imagen</label>
-        <input type="file" name="ArchivoImagen" class="form-control" />
+    <div class="gs-card" style="padding:1.75rem;">
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3" style="font-size:0.85rem;"></div>
+
+            <div class="row g-3">
+                <div class="col-md-8 gs-form-group">
+                    <label class="gs-label">Título</label>
+                    <input asp-for="Titulo" class="gs-input" />
+                    <span asp-validation-for="Titulo" style="color:var(--danger); font-size:0.8rem;"></span>
+                </div>
+                <div class="col-md-4 gs-form-group">
+                    <label class="gs-label">Precio</label>
+                    <input asp-for="Precio" class="gs-input" />
+                    <span asp-validation-for="Precio" style="color:var(--danger); font-size:0.8rem;"></span>
+                </div>
+            </div>
+
+            <div class="row g-3">
+                <div class="col-md-6 gs-form-group">
+                    <label class="gs-label">Categoría</label>
+                    <select asp-for="CategoriaId" class="gs-input" asp-items="ViewBag.Categorias">
+                        <option value="">— Seleccionar —</option>
+                    </select>
+                    <span asp-validation-for="CategoriaId" style="color:var(--danger); font-size:0.8rem;"></span>
+                </div>
+                <div class="col-md-3 gs-form-group">
+                    <label class="gs-label">Edad mínima</label>
+                    <input asp-for="EdadMinima" type="number" min="0" max="21" class="gs-input" />
+                    <span asp-validation-for="EdadMinima" style="color:var(--danger); font-size:0.8rem;"></span>
+                </div>
+                <div class="col-md-3 gs-form-group">
+                    <label class="gs-label">Promoción</label>
+                    <select asp-for="PromocionId" class="gs-input" asp-items="ViewBag.Promociones">
+                        <option value="">Ninguna</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="gs-form-group">
+                <label class="gs-label">Descripción</label>
+                <textarea asp-for="Descripcion" class="gs-input" rows="3" style="resize:vertical;"></textarea>
+            </div>
+
+            <div class="gs-form-group">
+                <label class="gs-label">Imagen</label>
+                <input type="file" name="archivoImagen" class="gs-input" style="padding:0.4rem 0.9rem;" />
+            </div>
+
+            <div class="d-flex gap-3 mt-1">
+                <button type="submit" class="btn-gs-primary" style="padding:0.6rem 2rem;">Guardar</button>
+                <a asp-action="Inventario" class="btn-gs-secondary" style="padding:0.6rem 1.5rem;">Cancelar</a>
+            </div>
+        </form>
     </div>
-    <button type="submit" class="btn btn-primary">Guardar</button>
-</form>
+</div>

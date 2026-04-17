@@ -22,6 +22,28 @@ namespace MVC.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("MVC.Models.Categoria", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Descripcion")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Categorias");
+                });
+
             modelBuilder.Entity("MVC.Models.Compra", b =>
                 {
                     b.Property<int>("id")
@@ -48,6 +70,33 @@ namespace MVC.Migrations
                     b.ToTable("Compras");
                 });
 
+            modelBuilder.Entity("MVC.Models.Promocion", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("FechaFin")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("FechaInicio")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<decimal>("PorcentajeDescuento")
+                        .HasColumnType("decimal(5,2)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Promociones");
+                });
+
             modelBuilder.Entity("MVC.Models.Usuario", b =>
                 {
                     b.Property<int>("id")
@@ -69,10 +118,13 @@ namespace MVC.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("Password")
+                    b.Property<byte[]>("Password")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("Salt")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("id");
 
@@ -87,25 +139,39 @@ namespace MVC.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
-                    b.Property<string>("Categoria")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                    b.Property<int>("CategoriaId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Descripcion")
                         .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
+                    b.Property<int>("EdadMinima")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("FechaRegistro")
+                        .HasColumnType("datetime2");
+
                     b.Property<decimal>("Precio")
                         .HasColumnType("decimal(10,2)");
+
+                    b.Property<int?>("PromocionId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Titulo")
                         .IsRequired()
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
+                    b.Property<string>("imagen")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("id");
+
+                    b.HasIndex("CategoriaId");
+
+                    b.HasIndex("PromocionId");
 
                     b.ToTable("VideoJuegos");
                 });
@@ -119,7 +185,7 @@ namespace MVC.Migrations
                         .IsRequired();
 
                     b.HasOne("MVC.Models.VideoJuego", "VideoJuego")
-                        .WithMany("Compras")
+                        .WithMany()
                         .HasForeignKey("videoJuegoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -129,12 +195,34 @@ namespace MVC.Migrations
                     b.Navigation("VideoJuego");
                 });
 
-            modelBuilder.Entity("MVC.Models.Usuario", b =>
+            modelBuilder.Entity("MVC.Models.VideoJuego", b =>
                 {
-                    b.Navigation("Compras");
+                    b.HasOne("MVC.Models.Categoria", "Categoria")
+                        .WithMany("VideoJuegos")
+                        .HasForeignKey("CategoriaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MVC.Models.Promocion", "Promocion")
+                        .WithMany("VideoJuegos")
+                        .HasForeignKey("PromocionId");
+
+                    b.Navigation("Categoria");
+
+                    b.Navigation("Promocion");
                 });
 
-            modelBuilder.Entity("MVC.Models.VideoJuego", b =>
+            modelBuilder.Entity("MVC.Models.Categoria", b =>
+                {
+                    b.Navigation("VideoJuegos");
+                });
+
+            modelBuilder.Entity("MVC.Models.Promocion", b =>
+                {
+                    b.Navigation("VideoJuegos");
+                });
+
+            modelBuilder.Entity("MVC.Models.Usuario", b =>
                 {
                     b.Navigation("Compras");
                 });
