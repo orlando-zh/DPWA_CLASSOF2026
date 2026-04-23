@@ -140,6 +140,36 @@
                 transform: translateY(-3px);
             }
 
+
+
+        .gs-panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+            padding: 1.5rem;
+            position: relative; /* Necesario para el efecto */
+        }
+
+            /* Creamos una línea invisible en la parte superior */
+            .gs-panel::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 3px;
+                background: var(--accent);
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            }
+
+            /* Solo se hace visible (sin mover la caja) al pasar el mouse */
+            .gs-panel:hover::before {
+                opacity: 1;
+            }
+
+
         /* BUTTONS */
         .btn-gs-primary {
             background: var(--accent);
@@ -363,6 +393,9 @@
                                 <i class="fa-solid fa-chart-line me-1"></i>Dashboard
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Account" asp-action="DetalleVentas">Detalle de Ventas</a>
+                        </li>
                     }
                     else
                     {
@@ -417,5 +450,7 @@
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    @RenderSection("Scripts", required: false)
 </body>
 </html>

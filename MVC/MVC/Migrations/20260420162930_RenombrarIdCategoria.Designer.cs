@@ -4,6 +4,7 @@ using MVC.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MVC.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260420162930_RenombrarIdCategoria")]
+    partial class RenombrarIdCategoria
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -58,51 +61,16 @@ namespace MVC.Migrations
                     b.Property<int>("UsuarioId")
                         .HasColumnType("int");
 
+                    b.Property<int>("videoJuegoId")
+                        .HasColumnType("int");
+
                     b.HasKey("id");
 
                     b.HasIndex("UsuarioId");
 
+                    b.HasIndex("videoJuegoId");
+
                     b.ToTable("Compras");
-                });
-
-            modelBuilder.Entity("MVC.Models.DetalleCompra", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("VideoJuegosId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("cantidad")
-                        .HasColumnType("int");
-
-                    b.Property<string>("codigoTransaccion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("estadoCompra")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("fechaHoraTransaccion")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("idCompra")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("total")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("VideoJuegosId");
-
-                    b.HasIndex("idCompra");
-
-                    b.ToTable("detalle_compra");
                 });
 
             modelBuilder.Entity("MVC.Models.Promocion", b =>
@@ -174,6 +142,9 @@ namespace MVC.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
+                    b.Property<int>("idCategoria")
+                        .HasColumnType("int");
+
                     b.Property<string>("Descripcion")
                         .IsRequired()
                         .HasMaxLength(500)
@@ -196,18 +167,14 @@ namespace MVC.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
-                    b.Property<int>("idCategoria")
-                        .HasColumnType("int")
-                        .HasColumnName("idCategoria");
-
                     b.Property<string>("imagen")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("id");
 
-                    b.HasIndex("PromocionId");
-
                     b.HasIndex("idCategoria");
+
+                    b.HasIndex("PromocionId");
 
                     b.ToTable("VideoJuegos");
                 });
@@ -220,39 +187,28 @@ namespace MVC.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Usuario");
-                });
-
-            modelBuilder.Entity("MVC.Models.DetalleCompra", b =>
-                {
                     b.HasOne("MVC.Models.VideoJuego", "VideoJuego")
                         .WithMany()
-                        .HasForeignKey("VideoJuegosId")
+                        .HasForeignKey("videoJuegoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MVC.Models.Compra", "Compra")
-                        .WithMany()
-                        .HasForeignKey("idCompra")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Compra");
+                    b.Navigation("Usuario");
 
                     b.Navigation("VideoJuego");
                 });
 
             modelBuilder.Entity("MVC.Models.VideoJuego", b =>
                 {
-                    b.HasOne("MVC.Models.Promocion", "Promocion")
-                        .WithMany("VideoJuegos")
-                        .HasForeignKey("PromocionId");
-
                     b.HasOne("MVC.Models.Categoria", "Categoria")
                         .WithMany("VideoJuegos")
                         .HasForeignKey("idCategoria")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("MVC.Models.Promocion", "Promocion")
+                        .WithMany("VideoJuegos")
+                        .HasForeignKey("PromocionId");
 
                     b.Navigation("Categoria");
 

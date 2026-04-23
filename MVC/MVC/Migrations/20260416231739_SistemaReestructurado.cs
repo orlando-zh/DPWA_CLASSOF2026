@@ -81,13 +81,13 @@ namespace MVC.Migrations
                         name: "FK_VideoJuegos_Categorias_CategoriaId",
                         column: x => x.CategoriaId,
                         principalTable: "Categorias",
-                        principalColumn: "Id",
+                        principalColumn: "idCategoria",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_VideoJuegos_Promociones_PromocionId",
                         column: x => x.PromocionId,
                         principalTable: "Promociones",
-                        principalColumn: "Id");
+                        principalColumn: "idCategoria");
                 });
 
             migrationBuilder.CreateTable(
@@ -130,7 +130,7 @@ namespace MVC.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_VideoJuegos_CategoriaId",
                 table: "VideoJuegos",
-                column: "CategoriaId");
+                column: "idCategoria");
 
             migrationBuilder.CreateIndex(
                 name: "IX_VideoJuegos_PromocionId",

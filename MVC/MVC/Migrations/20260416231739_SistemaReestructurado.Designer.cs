@@ -27,11 +27,11 @@ namespace MVC.Migrations
 
             modelBuilder.Entity("MVC.Models.Categoria", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("idCategoria")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("idCategoria"));
 
                     b.Property<string>("Descripcion")
                         .HasMaxLength(250)
@@ -42,7 +42,7 @@ namespace MVC.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.HasKey("Id");
+                    b.HasKey("idCategoria");
 
                     b.ToTable("Categorias");
                 });
@@ -75,11 +75,11 @@ namespace MVC.Migrations
 
             modelBuilder.Entity("MVC.Models.Promocion", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("idCategoria")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("idCategoria"));
 
                     b.Property<DateTime>("FechaFin")
                         .HasColumnType("datetime2");
@@ -95,7 +95,7 @@ namespace MVC.Migrations
                     b.Property<decimal>("PorcentajeDescuento")
                         .HasColumnType("decimal(5,2)");
 
-                    b.HasKey("Id");
+                    b.HasKey("idCategoria");
 
                     b.ToTable("Promociones");
                 });
@@ -142,7 +142,7 @@ namespace MVC.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
-                    b.Property<int>("CategoriaId")
+                    b.Property<int>("idCategoria")
                         .HasColumnType("int");
 
                     b.Property<string>("Descripcion")
@@ -172,7 +172,7 @@ namespace MVC.Migrations
 
                     b.HasKey("id");
 
-                    b.HasIndex("CategoriaId");
+                    b.HasIndex("idCategoria");
 
                     b.HasIndex("PromocionId");
 
@@ -202,7 +202,7 @@ namespace MVC.Migrations
                 {
                     b.HasOne("MVC.Models.Categoria", "Categoria")
                         .WithMany("VideoJuegos")
-                        .HasForeignKey("CategoriaId")
+                        .HasForeignKey("idCategoria")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

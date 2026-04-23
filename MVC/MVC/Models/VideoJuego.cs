@@ -30,9 +30,10 @@ namespace MVC.Models
 
 
         [Required(ErrorMessage = "Debe seleccionar una categoría")]
-        public int CategoriaId { get; set; }
+        [Column("idCategoria")] 
+        public int idCategoria { get; set; }
 
-        [ForeignKey("CategoriaId")]
+        [ForeignKey("idCategoria")]
         public Categoria? Categoria { get; set; }
 
         public int? PromocionId { get; set; }

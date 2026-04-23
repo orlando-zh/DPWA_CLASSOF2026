@@ -28,7 +28,7 @@ namespace MVC.Controllers
         }
 
         // 🔹 CATÁLOGO COMPLETO
-        public async Task<IActionResult> Catalogo(int? categoriaId, string? buscar)
+        public async Task<IActionResult> Catalogo(int? idCategoria, string? buscar) 
         {
             var consulta = _context.VideoJuegos
                 .Include(j => j.Categoria)
@@ -36,11 +36,12 @@ namespace MVC.Controllers
                 .AsQueryable();
 
             // Filtrado por Categoría
-            if (categoriaId.HasValue)
+            if (idCategoria.HasValue) 
             {
-                consulta = consulta.Where(j => j.CategoriaId == categoriaId);
-                ViewBag.CategoriaSeleccionada = (await _context.Categorias.FindAsync(categoriaId))?.Nombre;
+                consulta = consulta.Where(j => j.idCategoria == idCategoria); 
+                ViewBag.CategoriaSeleccionada = (await _context.Categorias.FindAsync(idCategoria))?.Nombre; 
             }
+
 
             // Filtrado por Nombre
             if (!string.IsNullOrEmpty(buscar))

@@ -58,7 +58,7 @@ namespace MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Categoria categoria)
         {
-            if (id != categoria.Id) return NotFound();
+            if (id != categoria.idCategoria) return NotFound();
 
             if (ModelState.IsValid)
             {
@@ -69,7 +69,7 @@ namespace MVC.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!_context.Categorias.Any(e => e.Id == categoria.Id)) return NotFound();
+                    if (!_context.Categorias.Any(e => e.idCategoria == categoria.idCategoria)) return NotFound();
                     else throw;
                 }
                 return RedirectToAction(nameof(Index));
@@ -83,7 +83,7 @@ namespace MVC.Controllers
             if (id == null) return NotFound();
 
             var categoria = await _context.Categorias
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.idCategoria == id);
             if (categoria == null) return NotFound();
 
             return View(categoria);

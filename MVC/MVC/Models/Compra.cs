@@ -12,13 +12,10 @@ namespace MVC.Models
         [Required]
         public DateTime FechaCompra { get; set; } = DateTime.Now;
 
+        public int UsuarioId { get; set; } 
+
         [ForeignKey("UsuarioId")]
         public Usuario Usuario { get; set; }
 
-        [Required]
-        public int videoJuegoId { get; set; }
-
-        [ForeignKey("videoJuegoId")]
-        public VideoJuego VideoJuego { get; set; }
     }
 }

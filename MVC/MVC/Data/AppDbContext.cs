@@ -13,5 +13,8 @@ namespace MVC.Data
         public DbSet<Compra> Compras { get; set; }
         public DbSet<Categoria> Categorias { get; set; }
         public DbSet<Promocion> Promociones { get; set; }
+
+        public DbSet<DetalleCompra> detalle_compra { get; set; }
+
     }
 }

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace MVC.Controllers
 {
-    [SessionAuthorize] // Protege todo el módulo administrativo
+    [SessionAuthorize]
     public class VideoJuegosController : Controller
     {
         private readonly AppDbContext _context;
@@ -33,7 +33,7 @@ namespace MVC.Controllers
         // 🔹 CREATE (GET)
         public IActionResult Create()
         {
-            ViewBag.Categorias = new SelectList(_context.Categorias, "Id", "Nombre");
+            ViewBag.Categorias = new SelectList(_context.Categorias, "idCategoria", "Nombre");
             ViewBag.Promociones = new SelectList(_context.Promociones, "Id", "Nombre");
             return View();
         }
@@ -48,7 +48,7 @@ namespace MVC.Controllers
 
             if (!ModelState.IsValid)
             {
-                ViewBag.Categorias = new SelectList(_context.Categorias, "Id", "Nombre", juego.CategoriaId);
+                ViewBag.Categorias = new SelectList(_context.Categorias, "idCategoria", "Nombre", juego.idCategoria);
                 ViewBag.Promociones = new SelectList(_context.Promociones, "Id", "Nombre", juego.PromocionId);
                 return View(juego);
             }
@@ -77,7 +77,7 @@ namespace MVC.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("", "No se pudo guardar el juego: " + ex.Message);
-                ViewBag.Categorias = new SelectList(_context.Categorias, "Id", "Nombre", juego.CategoriaId);
+                ViewBag.Categorias = new SelectList(_context.Categorias, "idCategoria", "Nombre", juego.idCategoria);
                 ViewBag.Promociones = new SelectList(_context.Promociones, "Id", "Nombre", juego.PromocionId);
                 return View(juego);
             }
@@ -91,7 +91,7 @@ namespace MVC.Controllers
             var juego = await _context.VideoJuegos.FindAsync(id);
             if (juego == null) return NotFound();
 
-            ViewBag.Categorias = new SelectList(_context.Categorias, "Id", "Nombre", juego.CategoriaId);
+            ViewBag.Categorias = new SelectList(_context.Categorias, "idCategoria", "Nombre", juego.idCategoria);
             ViewBag.Promociones = new SelectList(_context.Promociones, "Id", "Nombre", juego.PromocionId);
 
             return View(juego);
@@ -118,7 +118,7 @@ namespace MVC.Controllers
                     juegoBD.Precio = juego.Precio;
                     juegoBD.Descripcion = juego.Descripcion;
                     juegoBD.EdadMinima = juego.EdadMinima;
-                    juegoBD.CategoriaId = juego.CategoriaId;
+                    juegoBD.idCategoria = juego.idCategoria;
                     juegoBD.PromocionId = juego.PromocionId;
 
                     if (archivoImagen != null && archivoImagen.Length > 0)
@@ -126,7 +126,6 @@ namespace MVC.Controllers
                         var rutaCarpeta = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "imagenes");
                         if (!Directory.Exists(rutaCarpeta)) Directory.CreateDirectory(rutaCarpeta);
 
-                        // Eliminar imagen anterior si existe
                         if (!string.IsNullOrEmpty(juegoBD.imagen))
                         {
                             var rutaAnterior = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", juegoBD.imagen.TrimStart('/'));
@@ -152,7 +151,7 @@ namespace MVC.Controllers
                 }
             }
 
-            ViewBag.Categorias = new SelectList(_context.Categorias, "Id", "Nombre", juego.CategoriaId);
+            ViewBag.Categorias = new SelectList(_context.Categorias, "idCategoria", "Nombre", juego.idCategoria);
             ViewBag.Promociones = new SelectList(_context.Promociones, "Id", "Nombre", juego.PromocionId);
             juego.imagen = juegoBD.imagen;
             return View(juego);

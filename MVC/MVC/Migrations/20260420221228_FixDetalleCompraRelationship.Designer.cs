@@ -4,6 +4,7 @@ using MVC.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MVC.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260420221228_FixDetalleCompraRelationship")]
+    partial class FixDetalleCompraRelationship
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -73,6 +76,9 @@ namespace MVC.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("DetalleCompraId")
+                        .HasColumnType("int");
+
                     b.Property<int>("VideoJuegosId")
                         .HasColumnType("int");
 
@@ -97,6 +103,8 @@ namespace MVC.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("DetalleCompraId");
 
                     b.HasIndex("VideoJuegosId");
 
@@ -174,6 +182,9 @@ namespace MVC.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
+                    b.Property<int>("idCategoria")
+                        .HasColumnType("int");
+
                     b.Property<string>("Descripcion")
                         .IsRequired()
                         .HasMaxLength(500)
@@ -196,18 +207,14 @@ namespace MVC.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
-                    b.Property<int>("idCategoria")
-                        .HasColumnType("int")
-                        .HasColumnName("idCategoria");
-
                     b.Property<string>("imagen")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("id");
 
-                    b.HasIndex("PromocionId");
-
                     b.HasIndex("idCategoria");
+
+                    b.HasIndex("PromocionId");
 
                     b.ToTable("VideoJuegos");
                 });
@@ -225,6 +232,10 @@ namespace MVC.Migrations
 
             modelBuilder.Entity("MVC.Models.DetalleCompra", b =>
                 {
+                    b.HasOne("MVC.Models.DetalleCompra", null)
+                        .WithMany("DetallesCompra")
+                        .HasForeignKey("DetalleCompraId");
+
                     b.HasOne("MVC.Models.VideoJuego", "VideoJuego")
                         .WithMany()
                         .HasForeignKey("VideoJuegosId")
@@ -244,15 +255,15 @@ namespace MVC.Migrations
 
             modelBuilder.Entity("MVC.Models.VideoJuego", b =>
                 {
-                    b.HasOne("MVC.Models.Promocion", "Promocion")
-                        .WithMany("VideoJuegos")
-                        .HasForeignKey("PromocionId");
-
                     b.HasOne("MVC.Models.Categoria", "Categoria")
                         .WithMany("VideoJuegos")
                         .HasForeignKey("idCategoria")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("MVC.Models.Promocion", "Promocion")
+                        .WithMany("VideoJuegos")
+                        .HasForeignKey("PromocionId");
 
                     b.Navigation("Categoria");
 
@@ -262,6 +273,11 @@ namespace MVC.Migrations
             modelBuilder.Entity("MVC.Models.Categoria", b =>
                 {
                     b.Navigation("VideoJuegos");
+                });
+
+            modelBuilder.Entity("MVC.Models.DetalleCompra", b =>
+                {
+                    b.Navigation("DetallesCompra");
                 });
 
             modelBuilder.Entity("MVC.Models.Promocion", b =>

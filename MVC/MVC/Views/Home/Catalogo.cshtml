@@ -23,7 +23,7 @@
             </a>
             @foreach (var cat in (IEnumerable<MVC.Models.Categoria>)ViewBag.Categorias)
             {
-                <a asp-action="Catalogo" asp-route-categoriaId="@cat.Id"
+                <a asp-action="Catalogo" asp-route-idCategoria="@cat.idCategoria"
                    style="padding:0.45rem 0.75rem; border-radius:6px; font-size:0.88rem; text-decoration:none; transition:background 0.15s;
                               background:@(ViewBag.CategoriaSeleccionada == cat.Nombre ? "var(--surface2)" : "transparent");
                               color:@(ViewBag.CategoriaSeleccionada == cat.Nombre ? "var(--accent)" : "var(--muted)");"

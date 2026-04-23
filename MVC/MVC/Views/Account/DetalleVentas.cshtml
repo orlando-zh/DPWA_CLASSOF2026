@@ -1,0 +1,108 @@
+﻿@model List<VentaViewModel>
+@{
+    ViewData["Title"] = "Detalle de Ventas";
+}
+
+<div class="gs-page-header mb-4">
+    <h2 class="gs-page-title">
+        <i class="fa-solid fa-file-invoice-dollar me-2" style="color:var(--accent);"></i>
+        Reporte de Ventas
+    </h2>
+</div>
+
+<div class="gs-panel p-4 mb-4">
+    <form method="get" class="d-flex flex-wrap gap-3 align-items-end">
+        <div>
+            <label style="color:var(--muted); font-size:0.85rem; font-weight:bold; margin-bottom:0.4rem; display:block;">Fecha Desde</label>
+            <input type="date" name="desde" value="@ViewBag.Desde" class="gs-input" style="width: auto;" />
+        </div>
+        <div>
+            <label style="color:var(--muted); font-size:0.85rem; font-weight:bold; margin-bottom:0.4rem; display:block;">Fecha Hasta</label>
+            <input type="date" name="hasta" value="@ViewBag.Hasta" class="gs-input" style="width: auto;" />
+        </div>
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn-gs-primary" style="padding:0.5rem 1.5rem;">
+                <i class="fa-solid fa-filter me-2"></i>Filtrar
+            </button>
+            @if (ViewBag.Desde != null || ViewBag.Hasta != null)
+            {
+                <a href="?pagina=1" class="btn-gs-secondary" style="padding:0.5rem 1rem;">Limpiar</a>
+            }
+        </div>
+    </form>
+</div>
+
+<div  style="padding: 0; overflow: hidden;">
+    <div class="table-responsive">
+        <table class="table table-borderless mb-0" style="color: var(--text); width: 100%; text-align: left;">
+            <thead style="background-color: var(--surface2); font-family: 'Rajdhani', sans-serif; font-size: 1.15rem; color: var(--accent); border-bottom: 2px solid #2a3040;">
+                <tr>
+                    <th class="p-3">Usuario</th>
+                    <th class="p-3">ID Juego</th>
+                    <th class="p-3 text-center">Cantidad</th>
+                    <th class="p-3 text-end">Total</th>
+                    <th class="p-3 text-center">Estado</th>
+                    <th class="p-3">Fecha</th>
+                    <th class="p-3">Código</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    @foreach (var item in Model)
+                    {
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); transition: background 0.2s;" onmouseover="this.style.backgroundColor='var(--surface2)'" onmouseout="this.style.backgroundColor='transparent'">
+                            <td class="p-3 align-middle">@item.NombreUsuario</td>
+                            <td class="p-3 align-middle">@item.VideoJuegosId</td>
+                            <td class="p-3 align-middle text-center">@item.cantidad</td>
+                            <td class="p-3 align-middle text-end" style="color: var(--success); font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 1.1rem;">
+                                $@item.total
+                            </td>
+                            <td class="p-3 align-middle text-center">
+                                @if (item.estadoCompra == "Completado")
+                                {
+                                    <span style="background-color: var(--success); color: #fff; padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.8rem; font-weight: bold;">@item.estadoCompra</span>
+                                }
+                                else
+                                {
+                                    <span style="background-color: var(--muted); color: #fff; padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.8rem; font-weight: bold;">@item.estadoCompra</span>
+                                }
+                            </td>
+                            <td class="p-3 align-middle" style="color: var(--muted); font-size: 0.9rem;">
+                                @item.fechaHoraTransaccion.ToString("dd/MM/yyyy HH:mm")
+                            </td>
+                            <td class="p-3 align-middle" style="font-family: monospace; color: var(--info);">
+                                @item.codigoTransaccion
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="7" class="text-center p-5" style="color: var(--muted);">
+                            <i class="fa-solid fa-box-open fa-3x mb-3"></i>
+                            <p>No se encontraron registros con los filtros seleccionados.</p>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@if (ViewBag.TotalPaginas > 1)
+{
+    <div class="d-flex justify-content-center mt-4 gap-2">
+        @for (int i = 1; i <= ViewBag.TotalPaginas; i++)
+        {
+            bool esActual = (ViewBag.PaginaActual != null && ViewBag.PaginaActual == i) || (ViewBag.PaginaActual == null && i == 1);
+
+            <a href="?pagina=@i&desde=@ViewBag.Desde&hasta=@ViewBag.Hasta"
+               class="@(esActual ? "btn-gs-primary" : "btn-gs-secondary")"
+               style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-weight: bold; border-radius: 8px; text-decoration: none;">
+                @i
+            </a>
+        }
+    </div>
+}

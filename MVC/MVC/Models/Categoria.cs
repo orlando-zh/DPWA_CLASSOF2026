@@ -5,7 +5,7 @@ namespace MVC.Models
     public class Categoria
     {
         [Key]
-        public int Id { get; set; }
+        public int idCategoria { get; set; }
 
         [Required]
         [StringLength(100)]

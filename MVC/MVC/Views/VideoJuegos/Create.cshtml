@@ -31,10 +31,10 @@
             <div class="row g-3">
                 <div class="col-md-6 gs-form-group">
                     <label class="gs-label">Categoría</label>
-                    <select asp-for="CategoriaId" class="gs-input" asp-items="ViewBag.Categorias">
+                    <select asp-for="idCategoria" class="gs-input" asp-items="ViewBag.Categorias">
                         <option value="">— Seleccionar —</option>
                     </select>
-                    <span asp-validation-for="CategoriaId" style="color:var(--danger); font-size:0.8rem;"></span>
+                    <span asp-validation-for="idCategoria" style="color:var(--danger); font-size:0.8rem;"></span>
                 </div>
                 <div class="col-md-3 gs-form-group">
                     <label class="gs-label">Edad mínima</label>
