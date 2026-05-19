@@ -3,106 +3,144 @@
     ViewData["Title"] = "Detalle de Ventas";
 }
 
-<div class="gs-page-header mb-4">
-    <h2 class="gs-page-title">
-        <i class="fa-solid fa-file-invoice-dollar me-2" style="color:var(--accent);"></i>
-        Reporte de Ventas
-    </h2>
-</div>
+<style>
+    /* Estética Táctica Minimalista */
+    .page { padding: 1.5rem; background: #0d0f14; border-radius: 12px; }
+    .page-title { font-size: 18px; font-weight: 600; color: #f0a500; display: flex; align-items: center; gap: 10px; margin-bottom: 1.5rem; font-family: 'Rajdhani', sans-serif; }
+    
+    .filter-panel { background: #161b27; border: 0.5px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 1.25rem; margin-bottom: 1.5rem; }
+    .filter-label-section { font-size: 11px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.08em; display: flex; align-items: center; gap: 8px; margin-bottom: 1rem; }
+    .filter-label-section::before { content:''; width:4px; height:4px; border-radius:50%; background:#f0a500; display:inline-block; }
+    .filter-label-section::after { content:''; flex:1; height:0.5px; background:rgba(255,255,255,0.07); }
+    
+    /* Grid ajustada para mayor número de filtros */
+    .filter-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; align-items: end; }
+    .filter-group label { font-size: 11px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.06em; display: block; margin-bottom: 6px; }
+    
+    .gs-input { width: 100%; background: #0d0f14; border: 0.5px solid rgba(255,255,255,0.1); border-radius: 7px; color: #e5e7eb; padding: 8px 10px; font-size: 13px; outline: none; transition: border-color 0.2s; }
+    .gs-input:focus { border-color: #f0a500; }
+    
+    .btn-primary { background: #f0a500; color: #000; border: none; border-radius: 7px; padding: 9px 16px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 8px; cursor: pointer; white-space: nowrap; }
+    .btn-pdf-outline { padding: 8px 14px; border: 0.5px solid rgba(239, 68, 68, 0.4); background: transparent; color: #ef4444; border-radius: 7px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; text-decoration: none; transition: all 0.2s; }
+    .btn-pdf-outline:hover { background: rgba(239, 68, 68, 0.1); border-color: #ef4444; color: #ef4444; }
 
-<div class="gs-panel p-4 mb-4">
-    <form method="get" class="d-flex flex-wrap gap-3 align-items-end">
-        <div>
-            <label style="color:var(--muted); font-size:0.85rem; font-weight:bold; margin-bottom:0.4rem; display:block;">Fecha Desde</label>
-            <input type="date" name="desde" value="@ViewBag.Desde" class="gs-input" style="width: auto;" />
-        </div>
-        <div>
-            <label style="color:var(--muted); font-size:0.85rem; font-weight:bold; margin-bottom:0.4rem; display:block;">Fecha Hasta</label>
-            <input type="date" name="hasta" value="@ViewBag.Hasta" class="gs-input" style="width: auto;" />
-        </div>
-        <div class="d-flex gap-2">
-            <button type="submit" class="btn-gs-primary" style="padding:0.5rem 1.5rem;">
-                <i class="fa-solid fa-filter me-2"></i>Filtrar
-            </button>
-            @if (ViewBag.Desde != null || ViewBag.Hasta != null)
-            {
-                <a href="?pagina=1" class="btn-gs-secondary" style="padding:0.5rem 1rem;">Limpiar</a>
+    .table-wrap { background: #161b27; border: 0.5px solid rgba(255,255,255,0.08); border-radius: 10px; overflow: hidden; }
+    .tbl { width: 100%; border-collapse: collapse; }
+    .tbl thead tr { background: #1e2535; }
+    .tbl th { padding: 12px 16px; font-size: 11px; font-weight: 600; color: #f0a500; text-transform: uppercase; letter-spacing: 0.07em; text-align: left; }
+    .tbl td { padding: 14px 16px; font-size: 13px; color: #d1d5db; border-bottom: 0.5px solid rgba(255,255,255,0.05); vertical-align: middle; }
+    .tbl tbody tr:hover td { background: rgba(255,255,255,0.02); }
+    
+    .code { font-family: monospace; font-size: 12px; color: #38bdf8; opacity: 0.8; }
+    .price { color: #4ade80; font-weight: 600; font-size: 14px; font-family: 'Rajdhani', sans-serif; }
+    
+    .badge { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 5px; display: inline-block; }
+    .badge-ok { background: rgba(74,222,128,0.1); color: #4ade80; border: 0.5px solid rgba(74,222,128,0.2); }
+    .badge-pending { background: rgba(107, 114, 128, 0.1); color: #9ca3af; border: 0.5px solid rgba(107, 114, 128, 0.2); }
+
+    .active-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 1rem; }
+    .chip { background: rgba(240,165,0,0.1); color: #f0a500; border: 0.5px solid rgba(240,165,0,0.2); padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
+    .chip a { color: #f0a500; text-decoration: none; opacity: 0.5; }
+</style>
+
+<div class="page">
+    <div class="page-title">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        Reporte Maestro de Ventas
+    </div>
+
+    <!-- PANEL DE FILTROS AVANZADO -->
+    <div class="filter-panel">
+        <div class="filter-label-section">Parámetros de búsqueda</div>
+        <form method="get">
+            <div class="filter-grid">
+                <div class="filter-group">
+                    <label>Desde</label>
+                    <input class="gs-input" type="date" name="desde" value="@(ViewBag.Desde != null ? ((DateTime)ViewBag.Desde).ToString("yyyy-MM-dd") : "")" />
+                </div>
+                <div class="filter-group">
+                    <label>Hasta</label>
+                    <input class="gs-input" type="date" name="hasta" value="@(ViewBag.Hasta != null ? ((DateTime)ViewBag.Hasta).ToString("yyyy-MM-dd") : "")" />
+                </div>
+                <div class="filter-group">
+                    <label>Cliente</label>
+                    <select name="cliente" class="gs-input">
+                        <option value="">Todos</option>
+                        @foreach (var nombre in ViewBag.ListaClientes) {
+                            <option value="@nombre" selected="@(ViewBag.ClienteSelected == nombre)">@nombre</option>
+                        }
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Videojuego</label>
+                    <select name="juego" class="gs-input">
+                        <option value="">Todos</option>
+                        @foreach (var titulo in ViewBag.ListaJuegos) {
+                            <option value="@titulo" selected="@(ViewBag.JuegoSelected == titulo)">@titulo</option>
+                        }
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Estado</label>
+                    <select name="estado" class="gs-input">
+                        <option value="">Todos</option>
+                        <option value="Completado" selected="@(ViewBag.EstadoSelected == "Completado")">Completado</option>
+                        <option value="Pendiente" selected="@(ViewBag.EstadoSelected == "Pendiente")">Pendiente</option>
+                    </select>
+                </div>
+                <div style="display:flex; gap:8px;">
+                    <button type="submit" class="btn-primary">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+                        Filtrar
+                    </button>
+                    <a href="@Url.Action("ExportarPDF", "Account", new { desde = ViewBag.Desde, hasta = ViewBag.Hasta, cliente = ViewBag.ClienteSelected, juego = ViewBag.JuegoSelected, estado = ViewBag.EstadoSelected })" class="btn-pdf-outline">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                        PDF
+                    </a>
+                </div>
+            </div>
+
+            @* Chips de filtros dinámicos *@
+            @{ bool hayF = ViewBag.Desde != null || ViewBag.Hasta != null || !string.IsNullOrEmpty(ViewBag.ClienteSelected as string) || !string.IsNullOrEmpty(ViewBag.JuegoSelected as string) || !string.IsNullOrEmpty(ViewBag.EstadoSelected as string); }
+            @if (hayF) {
+                <div class="active-chips">
+                    @if (ViewBag.Desde != null) { <div class="chip">D: @(((DateTime)ViewBag.Desde).ToString("dd/MM/yyyy")) <a href="@Url.Action("DetalleVentas", "Account", new { hasta = ViewBag.Hasta, cliente = ViewBag.ClienteSelected, juego = ViewBag.JuegoSelected, estado = ViewBag.EstadoSelected })">×</a></div> }
+                    @if (ViewBag.ClienteSelected != null) { <div class="chip">U: @ViewBag.ClienteSelected <a href="@Url.Action("DetalleVentas", "Account", new { desde = ViewBag.Desde, hasta = ViewBag.Hasta, juego = ViewBag.JuegoSelected, estado = ViewBag.EstadoSelected })">×</a></div> }
+                    @if (ViewBag.JuegoSelected != null) { <div class="chip">J: @ViewBag.JuegoSelected <a href="@Url.Action("DetalleVentas", "Account", new { desde = ViewBag.Desde, hasta = ViewBag.Hasta, cliente = ViewBag.ClienteSelected, estado = ViewBag.EstadoSelected })">×</a></div> }
+                </div>
             }
-        </div>
-    </form>
-</div>
+        </form>
+    </div>
 
-<div  style="padding: 0; overflow: hidden;">
-    <div class="table-responsive">
-        <table class="table table-borderless mb-0" style="color: var(--text); width: 100%; text-align: left;">
-            <thead style="background-color: var(--surface2); font-family: 'Rajdhani', sans-serif; font-size: 1.15rem; color: var(--accent); border-bottom: 2px solid #2a3040;">
+    <!-- TABLA DE VENTAS -->
+    <div class="table-wrap">
+        <table class="tbl">
+            <thead>
                 <tr>
-                    <th class="p-3">Usuario</th>
-                    <th class="p-3">ID Juego</th>
-                    <th class="p-3 text-center">Cantidad</th>
-                    <th class="p-3 text-end">Total</th>
-                    <th class="p-3 text-center">Estado</th>
-                    <th class="p-3">Fecha</th>
-                    <th class="p-3">Código</th>
+                    <th>Usuario</th>
+                    <th>Videojuego</th>
+                    <th style="text-align:center;">Cant</th>
+                    <th style="text-align:right;">Total</th>
+                    <th style="text-align:center;">Estado</th>
+                    <th>Fecha</th>
+                    <th>Código</th>
                 </tr>
             </thead>
             <tbody>
-                @if (Model != null && Model.Any())
-                {
-                    @foreach (var item in Model)
-                    {
-                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); transition: background 0.2s;" onmouseover="this.style.backgroundColor='var(--surface2)'" onmouseout="this.style.backgroundColor='transparent'">
-                            <td class="p-3 align-middle">@item.NombreUsuario</td>
-                            <td class="p-3 align-middle">@item.VideoJuegosId</td>
-                            <td class="p-3 align-middle text-center">@item.cantidad</td>
-                            <td class="p-3 align-middle text-end" style="color: var(--success); font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 1.1rem;">
-                                $@item.total
-                            </td>
-                            <td class="p-3 align-middle text-center">
-                                @if (item.estadoCompra == "Completado")
-                                {
-                                    <span style="background-color: var(--success); color: #fff; padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.8rem; font-weight: bold;">@item.estadoCompra</span>
-                                }
-                                else
-                                {
-                                    <span style="background-color: var(--muted); color: #fff; padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.8rem; font-weight: bold;">@item.estadoCompra</span>
-                                }
-                            </td>
-                            <td class="p-3 align-middle" style="color: var(--muted); font-size: 0.9rem;">
-                                @item.fechaHoraTransaccion.ToString("dd/MM/yyyy HH:mm")
-                            </td>
-                            <td class="p-3 align-middle" style="font-family: monospace; color: var(--info);">
-                                @item.codigoTransaccion
-                            </td>
-                        </tr>
-                    }
-                }
-                else
-                {
+                @foreach (var item in Model) {
                     <tr>
-                        <td colspan="7" class="text-center p-5" style="color: var(--muted);">
-                            <i class="fa-solid fa-box-open fa-3x mb-3"></i>
-                            <p>No se encontraron registros con los filtros seleccionados.</p>
+                        <td style="font-weight:600;">@item.NombreUsuario</td>
+                        <td>@item.Titulo</td>
+                        <td style="text-align:center;">@item.cantidad</td>
+                        <td style="text-align:right;"><span class="price">$@item.total</span></td>
+                        <td style="text-align:center;">
+                            <span class="badge @(item.estadoCompra == "Completado" ? "badge-ok" : "badge-pending")">@item.estadoCompra</span>
                         </td>
+                        <td style="font-size:12px; color:#6b7280;">@item.fechaHoraTransaccion.ToString("dd/MM/yy HH:mm")</td>
+                        <td><span class="code">@item.codigoTransaccion</span></td>
                     </tr>
                 }
             </tbody>
         </table>
     </div>
 </div>
-
-@if (ViewBag.TotalPaginas > 1)
-{
-    <div class="d-flex justify-content-center mt-4 gap-2">
-        @for (int i = 1; i <= ViewBag.TotalPaginas; i++)
-        {
-            bool esActual = (ViewBag.PaginaActual != null && ViewBag.PaginaActual == i) || (ViewBag.PaginaActual == null && i == 1);
-
-            <a href="?pagina=@i&desde=@ViewBag.Desde&hasta=@ViewBag.Hasta"
-               class="@(esActual ? "btn-gs-primary" : "btn-gs-secondary")"
-               style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-weight: bold; border-radius: 8px; text-decoration: none;">
-                @i
-            </a>
-        }
-    </div>
-}

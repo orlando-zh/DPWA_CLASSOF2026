@@ -1,0 +1,63 @@
+﻿@model MVC.Models.Usuario
+@{
+    ViewData["Title"] = "Mi Perfil";
+}
+
+<style>
+    .page { padding: 1.5rem; background: #0d0f14; border-radius: 12px; }
+    .page-title { font-size: 18px; font-weight: 600; color: #f0a500; display: flex; align-items: center; gap: 10px; margin-bottom: 1.5rem; font-family: 'Rajdhani', sans-serif; }
+    .form-panel { background: #161b27; border: 0.5px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 1.5rem; margin-bottom: 1.5rem; }
+    .section-label { font-size: 11px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.08em; display: flex; align-items: center; gap: 8px; margin-bottom: 1.25rem; }
+    .section-label::after { content:''; flex:1; height:0.5px; background:rgba(255,255,255,0.07); }
+    .gs-input { width: 100%; background: #0d0f14; border: 0.5px solid rgba(255,255,255,0.1); border-radius: 7px; color: #e5e7eb; padding: 10px; font-size: 13px; outline: none; margin-bottom: 1rem; }
+    .btn-save { background: #f0a500; color: #000; border: none; border-radius: 7px; padding: 10px 20px; font-size: 13px; font-weight: 600; cursor: pointer; }
+
+
+    .gs-input:focus {
+    border-color: rgba(240, 165, 0, 0.5);
+    box-shadow: 0 0 0 3px rgba(240, 165, 0, 0.08);
+}
+</style>
+
+<div class="page">
+    <div class="page-title">
+        <i class="fa-solid fa-user-gear"></i> Gestión de Cuenta
+    </div>
+
+    @if (TempData["Success"] != null) { <div class="alert alert-success bg-dark text-success border-0 small">@TempData["Success"]</div> }
+    @if (TempData["Error"] != null) { <div class="alert alert-danger bg-dark text-danger border-0 small">@TempData["Error"]</div> }
+
+    <div class="row">
+        <!-- Información Personal -->
+        <div class="col-md-6">
+            <div class="form-panel">
+                <div class="section-label">Información Personal</div>
+                <form asp-action="ActualizarNombre" method="post">
+                    <label class="small mb-1" style="display:block; color: var(--accent); font-weight:600; letter-spacing:0.06em;">CORREO ELECTRÓNICO (No editable)</label>
+                    <input class="gs-input" type="text" value="@Model.Email" disabled style="opacity: 0.45; cursor: not-allowed;" />
+                    
+                    <label class="small mb-1" style="display:block; color: var(--accent); font-weight:600; letter-spacing:0.06em;">NOMBRE DE USUARIO</label>
+                    <input class="gs-input" type="text" name="nuevoNombre" value="@Model.Nombre" required />
+                    
+                    <button type="submit" class="btn-save">Actualizar Nombre</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Seguridad -->
+        <div class="col-md-6">
+            <div class="form-panel">
+                <div class="section-label">Seguridad y Contraseña</div>
+                <form asp-action="CambiarPassword" method="post">
+                   <label class="small mb-1" style="display:block; color: var(--accent); font-weight:600; letter-spacing:0.06em;">CONTRASEÑA ACTUAL</label>
+                    <input class="gs-input" type="password" name="passwordActual" placeholder="••••••••" required />
+                    
+                    <label class="small mb-1" style="display:block; color: var(--accent); font-weight:600; letter-spacing:0.06em;">NUEVA CONTRASEÑA</label>
+                    <input class="gs-input" type="password" name="nuevaPassword" placeholder="••••••••" required />
+                    
+                    <button type="submit" class="btn-save">Cambiar Contraseña</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

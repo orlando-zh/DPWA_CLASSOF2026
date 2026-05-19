@@ -1,0 +1,146 @@
+﻿@model MVC.Models.MisComprasViewModel
+@{
+    ViewData["Title"] = "Mis Compras";
+}
+
+<style>
+    /* Estilo Premium Minimalista */
+    .page { padding: 1.5rem; background: #0d0f14; border-radius: 12px; }
+    .page-title { font-size: 18px; font-weight: 600; color: #f0a500; display: flex; align-items: center; gap: 10px; margin-bottom: 1.5rem; font-family: 'Rajdhani', sans-serif; }
+    
+    .filter-panel { background: #161b27; border: 0.5px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 1.25rem; margin-bottom: 1.5rem; }
+    .filter-label-section { font-size: 11px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.08em; display: flex; align-items: center; gap: 8px; margin-bottom: 1rem; }
+    .filter-label-section::before { content:''; width:4px; height:4px; border-radius:50%; background:#f0a500; display:inline-block; }
+    .filter-label-section::after { content:''; flex:1; height:0.5px; background:rgba(255,255,255,0.07); }
+    
+    .filter-grid { display: grid; grid-template-columns: 1fr 1fr 1.6fr auto; gap: 12px; align-items: end; }
+    .filter-group label { font-size: 11px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.06em; display: block; margin-bottom: 6px; }
+    
+    .gs-input { width: 100%; background: #0d0f14; border: 0.5px solid rgba(255,255,255,0.1); border-radius: 7px; color: #e5e7eb; padding: 8px 12px; font-size: 13px; outline: none; transition: border-color 0.2s; }
+    .gs-input:focus { border-color: #f0a500; }
+    
+    .btn-primary { background: #f0a500; color: #000; border: none; border-radius: 7px; padding: 9px 18px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 8px; cursor: pointer; transition: opacity 0.2s; }
+    .btn-primary:hover { opacity: 0.9; }
+    .btn-secondary { background: #1e2535; border: 0.5px solid rgba(255,255,255,0.1); color: #9ca3af; border-radius: 7px; padding: 8px 12px; display: flex; align-items: center; justify-content: center; text-decoration: none; }
+    .btn-secondary:hover { color: #f0a500; border-color: #f0a500; }
+    
+    .table-wrap { background: #161b27; border: 0.5px solid rgba(255,255,255,0.08); border-radius: 10px; overflow: hidden; }
+    .tbl { width: 100%; border-collapse: collapse; }
+    .tbl thead tr { background: #1e2535; }
+    .tbl th { padding: 12px 16px; font-size: 11px; font-weight: 600; color: #f0a500; text-transform: uppercase; letter-spacing: 0.07em; text-align: left; }
+    .tbl td { padding: 14px 16px; font-size: 13px; color: #d1d5db; border-bottom: 0.5px solid rgba(255,255,255,0.05); vertical-align: middle; }
+    .tbl tbody tr:hover td { background: rgba(255,255,255,0.02); }
+    
+    .game-cell { display: flex; align-items: center; gap: 12px; }
+    .game-img { width: 50px; height: 30px; object-fit: cover; border-radius: 4px; background: #2a3040; border: 1px solid rgba(255,255,255,0.05); }
+    .game-title { font-weight: 600; color: #f3f4f6; }
+    
+    .code { font-family: 'Consolas', monospace; font-size: 12px; color: #38bdf8; opacity: 0.8; }
+    .price { color: #4ade80; font-weight: 600; font-size: 14px; font-family: 'Rajdhani', sans-serif; }
+    
+    .badge { font-size: 11px; font-weight: 600; padding: 4px 12px; border-radius: 6px; display: inline-block; text-transform: uppercase; }
+    .badge-ok { background: rgba(74,222,128,0.1); color: #4ade80; border: 0.5px solid rgba(74,222,128,0.2); }
+    .badge-wait { background: rgba(240,165,0,0.1); color: #f0a500; border: 0.5px solid rgba(240,165,0,0.2); }
+    .date-muted { color: #6b7280; font-size: 12px; }
+
+    /* Chips de filtros */
+    .active-chips { display: flex; gap: 8px; margin-top: 1rem; }
+    .chip { background: rgba(240,165,0,0.1); color: #f0a500; border: 0.5px solid rgba(240,165,0,0.2); padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
+    .chip a { color: #f0a500; text-decoration: none; opacity: 0.5; font-size: 14px; }
+    .chip a:hover { opacity: 1; }
+</style>
+
+<div class="page">
+    <div class="page-title">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        Mis videojuegos comprados
+    </div>
+
+    <!-- FORMULARIO DE FILTROS -->
+    <div class="filter-panel">
+        <div class="filter-label-section">Filtros de mi colección</div>
+        <form asp-action="MisCompras" method="get">
+            <div class="filter-grid">
+                <div class="filter-group">
+                    <label>Desde</label>
+                    <input class="gs-input" type="date" name="desde" value="@Model.Desde?.ToString("yyyy-MM-dd")" />
+                </div>
+                <div class="filter-group">
+                    <label>Hasta</label>
+                    <input class="gs-input" type="date" name="hasta" value="@Model.Hasta?.ToString("yyyy-MM-dd")" />
+                </div>
+                <div class="filter-group">
+                    <label>Título del juego</label>
+                    <input class="gs-input" type="text" name="nombreJuego" value="@Model.NombreJuego" placeholder="Buscar por nombre..." />
+                </div>
+                <div class="btn-row" style="display:flex; gap:8px;">
+                    <button type="submit" class="btn-primary">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+                        Filtrar
+                    </button>
+                    <a asp-action="MisCompras" class="btn-secondary">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            @* Chips de filtros activos *@
+            @{ bool tieneFiltros = Model.Desde != null || Model.Hasta != null || !string.IsNullOrEmpty(Model.NombreJuego); }
+            @if (tieneFiltros)
+            {
+                <div class="active-chips">
+                    @if (Model.Desde != null) { <div class="chip">Desde: @Model.Desde?.ToString("dd/MM/yyyy") <a asp-action="MisCompras" asp-route-hasta="@Model.Hasta?.ToString("yyyy-MM-dd")" asp-route-nombreJuego="@Model.NombreJuego">×</a></div> }
+                    @if (Model.Hasta != null) { <div class="chip">Hasta: @Model.Hasta?.ToString("dd/MM/yyyy") <a asp-action="MisCompras" asp-route-desde="@Model.Desde?.ToString("yyyy-MM-dd")" asp-route-nombreJuego="@Model.NombreJuego">×</a></div> }
+                    @if (!string.IsNullOrEmpty(Model.NombreJuego)) { <div class="chip">Juego: @Model.NombreJuego <a asp-action="MisCompras" asp-route-desde="@Model.Desde?.ToString("yyyy-MM-dd")" asp-route-hasta="@Model.Hasta?.ToString("yyyy-MM-dd")">×</a></div> }
+                </div>
+            }
+        </form>
+    </div>
+
+    <!-- TABLA DE RESULTADOS -->
+    <div class="table-wrap">
+        <table class="tbl">
+            <thead>
+                <tr>
+                    <th>Videojuego</th>
+                    <th>Fecha de compra</th>
+                    <th>Código</th>
+                    <th style="text-align:right;">Total</th>
+                    <th style="text-align:center;">Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Compras != null && Model.Compras.Any())
+                {
+                    @foreach (var item in Model.Compras)
+                    {
+                        <tr>
+                            <td>
+                                <div class="game-cell">
+                                    <img src="@(item.VideoJuego?.imagen ?? "/img/default.png")" class="game-img" alt="@item.VideoJuego?.Titulo" />
+                                    <span class="game-title">@item.VideoJuego?.Titulo</span>
+                                </div>
+                            </td>
+                            <td><span class="date-muted">@item.fechaHoraTransaccion.ToString("dd/MM/yyyy HH:mm")</span></td>
+                            <td><span class="code">@item.codigoTransaccion</span></td>
+                            <td style="text-align:right;"><span class="price">$@item.total</span></td>
+                            <td style="text-align:center;">
+                                <span class="badge @(item.estadoCompra == "Completado" ? "badge-ok" : "badge-wait")">
+                                    @item.estadoCompra
+                                </span>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="5" style="text-align:center; padding: 3rem; color: #6b7280;">
+                            No se encontraron videojuegos en tu colección con estos filtros.
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

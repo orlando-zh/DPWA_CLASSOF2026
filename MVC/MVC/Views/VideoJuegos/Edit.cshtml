@@ -13,6 +13,7 @@
 
     <div class="gs-card" style="padding:1.75rem;">
         <form asp-action="Edit" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3" style="font-size:0.85rem; background: rgba(220,53,69,0.1); padding: 10px; border-radius: 5px; border: 1px solid var(--danger);"></div>
             <input type="hidden" asp-for="id" />
 
             <div class="row g-3">
@@ -23,7 +24,7 @@
                 </div>
                 <div class="col-md-4 gs-form-group">
                     <label class="gs-label">Precio</label>
-                    <input asp-for="Precio" class="gs-input" />
+                    <input asp-for="Precio" type="number" step="0.01" class="gs-input" />
                     <span asp-validation-for="Precio" style="color:var(--danger); font-size:0.8rem;"></span>
                 </div>
             </div>

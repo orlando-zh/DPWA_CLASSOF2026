@@ -1,46 +1,52 @@
-using MVC.Data;
 using Microsoft.EntityFrameworkCore;
-
+using MVC.Data;
+using Rotativa.AspNetCore;
+using MVC.ModelBinders;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(options =>
+{
+    // Acepta decimales con coma o punto (evita errores al guardar/editar precios)
+    options.ModelBinderProviders.Insert(0, new DecimalModelBinderProvider());
+});
 
 builder.Services.AddDbContext<AppDbContext>(option =>
-    option.UseSqlServer(
-        builder.Configuration.GetConnectionString("DefaultConnection"))
+    option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
 
-
 builder.Services.AddSession();
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
+// IMPORTANTE: en Development muestra el error real en el navegador
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+}
+else
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
-
-//Todos los app van abajo del run que estos se llaman  milware  
 app.UseHttpsRedirection();
+
+// IMPORTANTE: necesario para servir archivos en wwwroot (incluye /imagenes/*)
+app.UseStaticFiles();
+
 app.UseRouting();
 
 app.UseSession();
 app.UseAuthorization();
 
-
+RotativaConfiguration.Setup(@"C:\Program Files\wkhtmltopdf\bin", "");
 
 app.MapStaticAssets();
-
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
-
 
 app.Run();

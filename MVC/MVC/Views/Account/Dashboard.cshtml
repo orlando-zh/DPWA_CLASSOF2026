@@ -77,6 +77,25 @@
             </p>
         </div>
 
+        <div class="gs-panel mb-4 d-flex gap-3 align-items-end flex-wrap">
+    
+            <div>
+                <label style="color: var(--muted); font-size: 0.8rem;">Desde</label>
+                <input type="date" id="desde" class="gs-select" />
+            </div>
+
+            <div>
+                <label style="color: var(--muted); font-size: 0.8rem;">Hasta</label>
+                <input type="date" id="hasta" class="gs-select" />
+            </div>
+
+            <button onclick="recargarGraficas()" class="btn btn-warning">
+                Filtrar
+            </button>
+
+        </div>
+
+
         <div class="row g-4">
             <div class="col-md-6">
                 <div class="gs-panel h-100">
@@ -96,7 +115,21 @@
                     <div id="containerPrecioPromedio" class="chart-box"></div>
                 </div>
             </div>
+
+            <div class="col-md-6">
+                <div class="gs-panel h-100">
+                    <div id="containerVentasMes" class="chart-box"></div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="gs-panel h-100">
+                    <div id="containerTopJuegos" class="chart-box"></div>
+                </div>
+            </div>
+
         </div>
+
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -134,67 +167,89 @@
             credits: { enabled: false }
         };
 
-        function cargarGrafica(idCategoria = "") {
-            $.get('/Account/ObtenerDatos', { idCategoria: idCategoria }, function (data) {
-                var categorias = data.map(x => x.categoria);
-                var totales = data.map(x => x.total);
-
-                Highcharts.chart('container', Highcharts.merge(darkTheme, {
-                    chart: { type: 'column' },
-                    title: { text: 'Gráfica de videojuegos por categorías de zona digital' },
-                    xAxis: { categories: categorias },
-                    yAxis: { title: { text: 'Cantidad de Juegos' } },
-                    tooltip: {
-                        backgroundColor: '#2a3040',
-                        style: { color: '#e8eaf0' },
-                        formatter: function () {
-                            return `<b>${this.key}</b><br/>Total de juegos: <b>${this.y}</b>`;
-                        }
-                    },
-                    series: [{
-                        name: 'Juegos',
-                        data: totales,
-                        color: '#f0a500' 
-                    }]
-                }));
-            });
+        function obtenerFiltros() {
+        return {
+        desde: $('#desde').val(),
+        hasta: $('#hasta').val(),
+        idCategoria: $('#filtroCategoria').val() // Captura el select
+        };
         }
 
-        function cargarGraficaPrecio() {
-            $.get('/Account/ObtenerPrecioPromedio', function (data) {
-                Highcharts.chart('containerPrecioPromedio', Highcharts.merge(darkTheme, {
-                    chart: { type: 'bar' },
-                    title: { text: 'Precio Promedio por Categoría' },
-                    xAxis: {
-                        type: 'category',
-                        title: { text: 'Categorías', style: { color: '#a0a8b8' } }
-                    },
-                    yAxis: {
-                        title: { text: 'Precio Promedio ($)', style: { color: '#a0a8b8' } }
-                    },
-                    legend: { enabled: false },
-                    tooltip: {
-                        backgroundColor: '#2a3040',
-                        style: { color: '#e8eaf0' },
-                        pointFormat: 'Promedio: <b>${point.y:,.2f}</b>'
-                    },
-                    series: [{
-                        name: 'Precio',
-                        colorByPoint: true,
-                        data: data
-                    }]
-                }));
-            });
+        // Función principal que dispara la actualización de TODO el dashboard
+        function recargarGraficas() {
+        const filtros = obtenerFiltros();
+        
+        // Ejecutamos cada carga pasando el objeto de filtros
+        cargarGrafica(filtros.idCategoria);
+        cargarGraficaPrecio(filtros.idCategoria);
+        cargarGraficaVentasMes(filtros);
+        cargarGraficaTopJuegos(filtros);
+        }
+
+        // --- GRÁFICA: Cantidad por Categoría ---
+        function cargarGrafica(idCategoria = "") {
+        $.get('/Account/ObtenerDatos', { idCategoria: idCategoria }, function (data) {
+        var categorias = data.map(x => x.categoria);
+        var totales = data.map(x => x.total);
+
+        Highcharts.chart('container', Highcharts.merge(darkTheme, {
+        chart: { type: 'column' },
+        title: { text: 'Cantidad de Videojuegos' },
+        xAxis: { categories: categorias },
+        yAxis: { title: { text: 'Unidades' } },
+        series: [{ name: 'Juegos', data: totales, color: '#f0a500' }]
+        }));
+        });
+        }
+
+        // --- GRÁFICA: Precio Promedio (CON FILTRO) ---
+        function cargarGraficaPrecio(idCategoria = "") {
+        $.get('/Account/ObtenerPrecioPromedio', { idCategoria: idCategoria }, function (data) {
+        Highcharts.chart('containerPrecioPromedio', Highcharts.merge(darkTheme, {
+        chart: { type: 'bar' },
+        title: { text: 'Precio Promedio por Categoría' },
+        xAxis: { type: 'category' },
+        yAxis: { title: { text: 'Precio Promedio ($)' } },
+        legend: { enabled: false },
+        tooltip: { pointFormat: 'Promedio: <b>${point.y:,.2f}</b>' },
+        series: [{ name: 'Precio', colorByPoint: true, data: data }]
+        }));
+        });
+        }
+
+        // --- GRÁFICA: Ventas por Mes ---
+        function cargarGraficaVentasMes(filtros) {
+        $.get('/Account/ObtenerVentasPorMes', filtros, function (data) {
+        const meses = ["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"];
+        Highcharts.chart('containerVentasMes', Highcharts.merge(darkTheme, {
+        chart: { type: 'line' },
+        title: { text: 'Tendencia de Ventas ($)' },
+        xAxis: { categories: data.map(x => meses[x.mes - 1]) },
+        series: [{ name: 'Ventas', data: data.map(x => x.total), color: '#2ecc71' }]
+        }));
+        });
+        }
+
+        // --- GRÁFICA: Top Juegos ---
+        function cargarGraficaTopJuegos(filtros) {
+        $.get('/Account/ObtenerTopJuegos', filtros, function (data) {
+        const seriesData = data.map(x => ({ name: x.juego, y: x.total }));
+        Highcharts.chart('containerTopJuegos', Highcharts.merge(darkTheme, {
+        chart: { type: 'pie' },
+        title: { text: 'Juegos más Vendidos' },
+        series: [{ name: 'Ventas', colorByPoint: true, data: seriesData }]
+        }));
+        });
         }
 
         $(document).ready(function() {
-            cargarGrafica();
-            cargarGraficaPrecio();
+        // Carga inicial
+        recargarGraficas();
 
-            $('#filtroCategoria').change(function () {
-                var id = $(this).val();
-                cargarGrafica(id ? parseInt(id) : "");
-            });
+        // Evento: Cuando cambie el filtro de categoría, se recargan TODAS
+        $('#filtroCategoria').change(function () {
+        recargarGraficas();
+        });
         });
     </script>
 </body>

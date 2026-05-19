@@ -1,0 +1,183 @@
+﻿@model MVC.Models.VentasReporteViewModel
+@{
+    Layout = null; 
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Reporte de Ventas - GameStore</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            font-size: 11px;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        .header-title {
+            text-align: center;
+            color: #2c3e50;
+            font-size: 22px;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .header-date {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 11px;
+            margin-bottom: 25px;
+        }
+        
+        /* Contenedor de filtros mejorado */
+        .filters-container {
+            background-color: #fcfcfc;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 20px;
+        }
+        .filters-title {
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 12px;
+            margin-bottom: 8px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 4px;
+        }
+        .filter-table {
+            width: 100%;
+            border: none !important;
+        }
+        .filter-table td {
+            border: none !important;
+            padding: 2px 0;
+            width: 50%;
+            vertical-align: top;
+        }
+        .filter-label {
+            font-weight: bold;
+            color: #34495e;
+            width: 90px;
+            display: inline-block;
+        }
+
+        /* Estilos de la tabla de datos */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #bdc3c7;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f4f4;
+            color: #2c3e50;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 10px;
+        }
+        .text-center { text-align: center; }
+        .text-right { text-align: right; }
+        .badge-success { color: #27ae60; font-weight: bold; }
+        .badge-warning { color: #f39c12; font-weight: bold; }
+        .total-cell { font-weight: bold; color: #2980b9; }
+    </style>
+</head>
+<body>
+
+    <div class="header-title">GameStore - Reporte de Ventas</div>
+    <div class="header-date">Reporte generado el: @DateTime.Now.ToString("dd/MM/yyyy HH:mm")</div>
+
+    @{
+        bool hayFiltros = Model.FiltroDesde.HasValue || 
+                          Model.FiltroHasta.HasValue || 
+                          !string.IsNullOrEmpty(Model.FiltroCliente) || 
+                          !string.IsNullOrEmpty(Model.FiltroJuego) || 
+                          !string.IsNullOrEmpty(Model.FiltroEstado);
+    }
+
+    @if (hayFiltros)
+    {
+        <div class="filters-container">
+            <div class="filters-title">Criterios de Búsqueda Aplicados</div>
+            <table class="filter-table">
+                <tr>
+                    <td>
+                        @if (Model.FiltroDesde.HasValue) { 
+                            <div><span class="filter-label">Desde:</span> @Model.FiltroDesde.Value.ToString("dd/MM/yyyy")</div> 
+                        }
+                        @if (Model.FiltroHasta.HasValue) { 
+                            <div><span class="filter-label">Hasta:</span> @Model.FiltroHasta.Value.ToString("dd/MM/yyyy")</div> 
+                        }
+                        @if (!string.IsNullOrEmpty(Model.FiltroCliente)) { 
+                            <div><span class="filter-label">Cliente:</span> @Model.FiltroCliente</div> 
+                        }
+                    </td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(Model.FiltroJuego)) { 
+                            <div><span class="filter-label">Videojuego:</span> @Model.FiltroJuego</div> 
+                        }
+                        @if (!string.IsNullOrEmpty(Model.FiltroEstado)) { 
+                            <div><span class="filter-label">Estado:</span> @Model.FiltroEstado</div> 
+                        }
+                    </td>
+                </tr>
+            </table>
+        </div>
+    }
+
+    <table>
+        <thead>
+            <tr>
+                <th>Videojuego</th>
+                <th>Usuario</th>
+                <th class="text-center">Cant.</th>
+                <th class="text-right">Total</th>
+                <th class="text-center">Estado</th>
+                <th>Fecha</th>
+                <th>Código Transacción</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Ventas != null && Model.Ventas.Any())
+            {
+                foreach (var item in Model.Ventas)
+                {
+                    <tr>
+                        <td>@item.Titulo</td>
+                        <td>@item.NombreUsuario</td>
+                        <td class="text-center">@item.cantidad</td>
+                        <td class="text-right total-cell">$@item.total.ToString("F2")</td>
+                        <td class="text-center">
+                            @if (item.estadoCompra == "Completado")
+                            {
+                                <span class="badge-success">@item.estadoCompra</span>
+                            }
+                            else
+                            {
+                                <span class="badge-warning">@item.estadoCompra</span>
+                            }
+                        </td>
+                        <td>@item.fechaHoraTransaccion.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td style="font-family: monospace; font-size: 9px;">@item.codigoTransaccion</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="7" class="text-center" style="padding: 40px; color: #7f8c8d;">
+                        No se encontraron registros que coincidan con los filtros aplicados.
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+</body>
+</html>

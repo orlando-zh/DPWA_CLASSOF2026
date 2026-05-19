@@ -20,7 +20,6 @@ namespace MVC.Models
         [Required]
         public byte[] Password { get; set; }
 
-
         [Required]
         public string Salt { get; set; }
 
@@ -28,5 +27,10 @@ namespace MVC.Models
         public DateTime FechaRegistro { get; set; } = DateTime.Now;
 
         public ICollection<Compra> Compras { get; set; }
+
+        // Relación con Rol
+        [ForeignKey("idRol")]
+        public Rol Rol { get; set; }
+        public int idRol { get; set; }
     }
 }

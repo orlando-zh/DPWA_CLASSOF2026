@@ -28,47 +28,64 @@ namespace MVC.Controllers
         }
 
         // 🔹 CATÁLOGO COMPLETO
-        public async Task<IActionResult> Catalogo(int? idCategoria, string? buscar) 
+        public async Task<IActionResult> Catalogo(int? idCategoria, string? buscar, int pagina = 1)
         {
+            int registrosPorPagina = 10; // Requerimiento estricto
+
             var consulta = _context.VideoJuegos
                 .Include(j => j.Categoria)
                 .Include(j => j.Promocion)
                 .AsQueryable();
 
-            // Filtrado por Categoría
-            if (idCategoria.HasValue) 
+            // 1. Filtrado por Categoría
+            if (idCategoria.HasValue)
             {
-                consulta = consulta.Where(j => j.idCategoria == idCategoria); 
-                ViewBag.CategoriaSeleccionada = (await _context.Categorias.FindAsync(idCategoria))?.Nombre; 
+                consulta = consulta.Where(j => j.idCategoria == idCategoria);
             }
 
-
-            // Filtrado por Nombre
+            // 2. Filtrado por Nombre
             if (!string.IsNullOrEmpty(buscar))
             {
                 consulta = consulta.Where(j => j.Titulo.Contains(buscar));
-                ViewBag.Busqueda = buscar;
             }
 
-            var juegos = await consulta.ToListAsync();
+            // 3. Cálculo de Paginación
+            var totalRegistros = await consulta.CountAsync();
+            var totalPaginas = (int)Math.Ceiling((double)totalRegistros / registrosPorPagina);
+
+            // 4. Obtención de datos con Skip y Take[cite: 1, 5]
+            var juegos = await consulta
+                .OrderBy(j => j.Titulo) // Ordenar es obligatorio para Skip/Take
+                .Skip((pagina - 1) * registrosPorPagina)
+                .Take(registrosPorPagina)
+                .ToListAsync();
+
+            // 5. Preparar el modelo para la vista
+            var model = new CatalogoViewModel
+            {
+                Juegos = juegos,
+                PaginaActual = pagina,
+                TotalPaginas = totalPaginas,
+                CategoriaId = idCategoria,
+                Busqueda = buscar
+            };
+
+            // Mantener la lista de categorías para el menú lateral/filtro
             ViewBag.Categorias = await _context.Categorias.ToListAsync();
-            
-            return View(juegos);
+
+            return View(model);
         }
 
         // 🔹 PROMOCIONES VIGENTES
         public async Task<IActionResult> Promociones()
         {
-            var fechaActual = DateTime.Now;
-            var juegos = await _context.VideoJuegos
-                .Include(j => j.Categoria)
-                .Include(j => j.Promocion)
-                .Where(j => j.PromocionId != null 
-                         && j.Promocion.FechaInicio <= fechaActual 
-                         && j.Promocion.FechaFin >= fechaActual)
+            // Es vital el .Include para que el objeto Promocion no sea null en la vista
+            var juegosConOferta = await _context.VideoJuegos
+                .Include(v => v.Promocion)
+                .Where(v => v.PromocionId != null) // Filtramos solo los que tienen oferta vinculada
                 .ToListAsync();
 
-            return View(juegos);
+            return View(juegosConOferta);
         }
 
         public IActionResult Privacy()

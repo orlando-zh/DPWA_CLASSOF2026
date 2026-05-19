@@ -7,6 +7,9 @@ using System.IO;
 using appWeb2.Filtros;
 using System;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Hosting;
+using System.Linq;
 
 namespace MVC.Controllers
 {
@@ -14,10 +17,69 @@ namespace MVC.Controllers
     public class VideoJuegosController : Controller
     {
         private readonly AppDbContext _context;
+        private readonly ILogger<VideoJuegosController> _logger;
+        private readonly IWebHostEnvironment _env;
 
-        public VideoJuegosController(AppDbContext context)
+        private static readonly string[] AllowedImageExtensions =
+        [
+            ".jpg", ".jpeg", ".png", ".gif", ".webp"
+        ];
+
+        public VideoJuegosController(AppDbContext context, ILogger<VideoJuegosController> logger, IWebHostEnvironment env)
         {
             _context = context;
+            _logger = logger;
+            _env = env;
+        }
+
+        private string GetImagesFolderPath()
+        {
+            var webRoot = _env.WebRootPath ?? Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+            return Path.Combine(webRoot, "imagenes");
+        }
+
+        private static string? GetSafeFileNameFromRelativePath(string? relativePath)
+            => string.IsNullOrWhiteSpace(relativePath) ? null : Path.GetFileName(relativePath);
+
+        private async Task<string?> SaveImageAsync(IFormFile? archivoImagen)
+        {
+            if (archivoImagen == null || archivoImagen.Length <= 0)
+                return null;
+
+            var ext = Path.GetExtension(archivoImagen.FileName);
+            if (string.IsNullOrWhiteSpace(ext) || !AllowedImageExtensions.Contains(ext, StringComparer.OrdinalIgnoreCase))
+                throw new InvalidOperationException("Formato de imagen no permitido. Use JPG, PNG, GIF o WEBP.");
+
+            var rutaCarpeta = GetImagesFolderPath();
+            Directory.CreateDirectory(rutaCarpeta);
+
+            var nombreArchivo = $"{Guid.NewGuid()}{ext}";
+            var rutaNueva = Path.Combine(rutaCarpeta, nombreArchivo);
+
+            await using (var stream = new FileStream(rutaNueva, FileMode.Create, FileAccess.Write, FileShare.None))
+            {
+                await archivoImagen.CopyToAsync(stream);
+            }
+
+            return "/imagenes/" + nombreArchivo;
+        }
+
+        private void TryDeleteImage(string? relativeImagePath)
+        {
+            var fileName = GetSafeFileNameFromRelativePath(relativeImagePath);
+            if (string.IsNullOrWhiteSpace(fileName)) return;
+
+            var rutaImagen = Path.Combine(GetImagesFolderPath(), fileName);
+            if (!System.IO.File.Exists(rutaImagen)) return;
+
+            try
+            {
+                System.IO.File.Delete(rutaImagen);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "No se pudo borrar la imagen {RutaImagen}", rutaImagen);
+            }
         }
 
         // 🔹 INVENTARIO
@@ -55,20 +117,9 @@ namespace MVC.Controllers
 
             try
             {
-                if (archivoImagen != null && archivoImagen.Length > 0)
-                {
-                    var rutaCarpeta = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "imagenes");
-                    if (!Directory.Exists(rutaCarpeta)) Directory.CreateDirectory(rutaCarpeta);
-
-                    var nombreArchivo = Guid.NewGuid().ToString() + Path.GetExtension(archivoImagen.FileName);
-                    var rutaFinal = Path.Combine(rutaCarpeta, nombreArchivo);
-
-                    using (var stream = new FileStream(rutaFinal, FileMode.Create))
-                    {
-                        await archivoImagen.CopyToAsync(stream);
-                    }
-                    juego.imagen = "/imagenes/" + nombreArchivo;
-                }
+                var nuevaRutaImagen = await SaveImageAsync(archivoImagen);
+                if (!string.IsNullOrWhiteSpace(nuevaRutaImagen))
+                    juego.imagen = nuevaRutaImagen;
 
                 _context.VideoJuegos.Add(juego);
                 await _context.SaveChangesAsync();
@@ -76,6 +127,7 @@ namespace MVC.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "No se pudo crear el juego");
                 ModelState.AddModelError("", "No se pudo guardar el juego: " + ex.Message);
                 ViewBag.Categorias = new SelectList(_context.Categorias, "idCategoria", "Nombre", juego.idCategoria);
                 ViewBag.Promociones = new SelectList(_context.Promociones, "Id", "Nombre", juego.PromocionId);
@@ -123,23 +175,14 @@ namespace MVC.Controllers
 
                     if (archivoImagen != null && archivoImagen.Length > 0)
                     {
-                        var rutaCarpeta = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "imagenes");
-                        if (!Directory.Exists(rutaCarpeta)) Directory.CreateDirectory(rutaCarpeta);
-
-                        if (!string.IsNullOrEmpty(juegoBD.imagen))
+                      // Guardar primero la nueva imagen y luego borrar la anterior (evita quedarse sin imagen si falla el guardado)
+                        var nuevaRutaImagen = await SaveImageAsync(archivoImagen);
+                        if (!string.IsNullOrWhiteSpace(nuevaRutaImagen))
                         {
-                            var rutaAnterior = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", juegoBD.imagen.TrimStart('/'));
-                            if (System.IO.File.Exists(rutaAnterior)) System.IO.File.Delete(rutaAnterior);
+                            var anterior = juegoBD.imagen;
+                            juegoBD.imagen = nuevaRutaImagen;
+                            TryDeleteImage(anterior);
                         }
-
-                        var nombreArchivo = Guid.NewGuid().ToString() + Path.GetExtension(archivoImagen.FileName);
-                        var rutaNueva = Path.Combine(rutaCarpeta, nombreArchivo);
-
-                        using (var stream = new FileStream(rutaNueva, FileMode.Create))
-                        {
-                            await archivoImagen.CopyToAsync(stream);
-                        }
-                        juegoBD.imagen = "/imagenes/" + nombreArchivo;
                     }
 
                     await _context.SaveChangesAsync();
@@ -147,6 +190,7 @@ namespace MVC.Controllers
                 }
                 catch (Exception ex)
                 {
+                    _logger.LogError(ex, "Error al editar videojuego {VideoJuegoId}", id);
                     ModelState.AddModelError("", "Error al actualizar: " + ex.Message);
                 }
             }
@@ -181,12 +225,8 @@ namespace MVC.Controllers
 
             if (juego != null)
             {
-                if (!string.IsNullOrEmpty(juego.imagen))
-                {
-                    var rutaImagen = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", juego.imagen.TrimStart('/'));
-                    if (System.IO.File.Exists(rutaImagen)) System.IO.File.Delete(rutaImagen);
-                }
-
+                TryDeleteImage(juego.imagen);
+                        
                 _context.VideoJuegos.Remove(juego);
                 await _context.SaveChangesAsync();
             }

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<MVC.Models.VideoJuego>
+﻿@model MVC.Models.CatalogoViewModel
 @{
     ViewData["Title"] = "Catálogo";
 }
@@ -11,87 +11,121 @@
 </div>
 
 <div class="row g-4">
-    <!-- Sidebar filtros -->
+    <!-- 1. SIDEBAR DE FILTROS -->
     <div class="col-lg-2 col-md-3">
         <div style="font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--muted); margin-bottom:0.75rem;">Género</div>
         <nav style="display:flex; flex-direction:column; gap:2px;">
             <a asp-action="Catalogo"
-               style="padding:0.45rem 0.75rem; border-radius:6px; font-size:0.88rem; text-decoration:none; transition:background 0.15s;
-                      background:@(ViewBag.CategoriaSeleccionada == null ? "var(--surface2)" : "transparent");
-                      color:@(ViewBag.CategoriaSeleccionada == null ? "var(--accent)" : "var(--text)");">
+                   style="padding:0.45rem 0.75rem; border-radius:6px; font-size:0.88rem; text-decoration:none; transition:background 0.15s;
+                background:@(ViewBag.CategoriaSeleccionada == null ? "var(--surface2)" : "transparent");
+                color:@(ViewBag.CategoriaSeleccionada == null ? "var(--accent)" : "var(--text)");">
                 Todos
             </a>
-            @foreach (var cat in (IEnumerable<MVC.Models.Categoria>)ViewBag.Categorias)
+            @if (ViewBag.Categorias != null)
             {
-                <a asp-action="Catalogo" asp-route-idCategoria="@cat.idCategoria"
-                   style="padding:0.45rem 0.75rem; border-radius:6px; font-size:0.88rem; text-decoration:none; transition:background 0.15s;
-                              background:@(ViewBag.CategoriaSeleccionada == cat.Nombre ? "var(--surface2)" : "transparent");
-                              color:@(ViewBag.CategoriaSeleccionada == cat.Nombre ? "var(--accent)" : "var(--muted)");"
-                   onmouseover="this.style.background='var(--surface2)'; this.style.color='var(--text)';"
-                   onmouseout="this.style.background='@(ViewBag.CategoriaSeleccionada == cat.Nombre ? "var(--surface2)" : "transparent")'; this.style.color='@(ViewBag.CategoriaSeleccionada == cat.Nombre ? "var(--accent)" : "var(--muted)")';">
-                    @cat.Nombre
-                </a>
+                @foreach (var cat in (IEnumerable<MVC.Models.Categoria>)ViewBag.Categorias)
+                {
+                    <a asp-action="Catalogo" asp-route-idCategoria="@cat.idCategoria"
+                           style="padding:0.45rem 0.75rem; border-radius:6px; font-size:0.88rem; text-decoration:none; transition:background 0.15s;
+                        background:@(ViewBag.CategoriaSeleccionada == cat.Nombre ? "var(--surface2)" : "transparent");
+                        color:@(ViewBag.CategoriaSeleccionada == cat.Nombre ? "var(--accent)" : "var(--muted)");">
+                        @cat.Nombre
+                    </a>
+                }
             }
         </nav>
     </div>
 
-    <!-- Contenido principal -->
+    <!-- 2. CONTENIDO PRINCIPAL -->
     <div class="col-lg-10 col-md-9">
-        <!-- Barra de búsqueda -->
+        <!-- BARRA DE BÚSQUEDA -->
         <form asp-action="Catalogo" method="get" class="d-flex mb-4 gap-2">
-            <input type="text" name="buscar" value="@ViewBag.Busqueda"
+            <input type="text" name="buscar" value="@Model.Busqueda"
                    class="gs-input" placeholder="Buscar juego..." style="max-width:340px;" />
             <button type="submit" class="btn-gs-primary" style="padding:0.5rem 1rem;">
                 <i class="fa-solid fa-magnifying-glass"></i>
             </button>
-            @if (ViewBag.Busqueda != null || ViewBag.CategoriaSeleccionada != null)
+            @if (!string.IsNullOrEmpty(Model.Busqueda) || ViewBag.CategoriaSeleccionada != null)
             {
                 <a asp-action="Catalogo" class="btn-gs-secondary" style="padding:0.5rem 0.9rem; font-size:0.85rem;">Limpiar</a>
             }
         </form>
 
+        <!-- GRID DE JUEGOS -->
         <div class="row g-3">
-            @foreach (var juego in Model)
+            @if (Model.Juegos != null && Model.Juegos.Any())
             {
-                <div class="col-sm-6 col-xl-4">
-                    <div class="gs-card h-100 d-flex flex-column">
-                        <div style="position:relative; overflow:hidden;">
-                            <a asp-action="Details" asp-route-id="@juego.id">
-                                <img src="@juego.imagen" alt="@juego.Titulo"
-                                     style="width:100%; height:190px; object-fit:cover; display:block; transition:transform 0.3s;"
-                                     onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'" />
-                            </a>
-                            <div style="position:absolute; top:8px; left:8px;"><span class="badge-age">+@juego.EdadMinima</span></div>
-                            @if (juego.PromocionId != null)
-                            {
-                                <div style="position:absolute; top:8px; right:8px;"><span class="badge-promo">PROMO</span></div>
-                            }
-                        </div>
-                        <div style="padding:0.9rem; flex:1; display:flex; flex-direction:column;">
-                            <span class="badge-category mb-2" style="display:inline-block; width:fit-content;">@juego.Categoria?.Nombre</span>
-                            <a asp-action="Details" asp-route-id="@juego.id"
-                               style="text-decoration:none; color:var(--text); font-family:'Rajdhani',sans-serif; font-size:1rem; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:block; margin-bottom:auto;">
-                                @juego.Titulo
-                            </a>
-                            <div style="margin-top:0.75rem; display:flex; justify-content:space-between; align-items:center;">
-                                <span style="color:var(--success); font-weight:700; font-family:'Rajdhani',sans-serif; font-size:1.15rem;">$@juego.Precio</span>
-                                <a asp-action="Details" asp-route-id="@juego.id" class="btn-gs-primary" style="font-size:0.78rem; padding:0.3rem 0.8rem;">
-                                    <i class="fa-solid fa-cart-plus me-1"></i>Ver
+                @foreach (var juego in Model.Juegos)
+                {
+                    <div class="col-sm-6 col-md-4 col-xl-3">
+                        <div class="gs-card h-100 d-flex flex-column">
+                            <!-- Cápsula Horizontal (Estilo Steam) -->
+                            <div style="position:relative; height:160px; overflow:hidden; background:#000; border-radius:8px 8px 0 0;">
+                                <a asp-action="Details" asp-route-id="@juego.id">
+                                    <img src="@juego.imagen" alt="@juego.Titulo"
+                                         style="width:100%; height:100%; object-fit:cover; display:block; transition:transform 0.3s;"
+                                         onmouseover="this.style.transform='scale(1.05)'"
+                                         onmouseout="this.style.transform='scale(1)'" />
                                 </a>
+                                <div style="position:absolute; top:8px; left:8px;"><span class="badge-age">+@juego.EdadMinima</span></div>
+                                @if (juego.PromocionId != null)
+                                {
+                                    <div style="position:absolute; top:8px; right:8px;"><span class="badge-promo">PROMO</span></div>
+                                }
+                            </div>
+
+                            <div style="padding:0.9rem; flex:1; display:flex; flex-direction:column;">
+                                <span class="badge-category mb-2" style="display:inline-block; width:fit-content;">@juego.Categoria?.Nombre</span>
+                                <a asp-action="Details" asp-route-id="@juego.id"
+                                       style="text-decoration:none; color:var(--text); font-family:'Rajdhani',sans-serif; font-size:0.95rem; font-weight:600; display:block; margin-bottom:auto;">
+                                    @juego.Titulo
+                                </a>
+                                <div style="margin-top:0.75rem; display:flex; justify-content:space-between; align-items:center;">
+                                    <span style="color:var(--success); font-weight:700; font-family:'Rajdhani',sans-serif; font-size:1.1rem;">$@juego.Precio</span>
+                                    <a asp-action="Details" asp-route-id="@juego.id" class="btn-gs-primary" style="font-size:0.75rem; padding:0.3rem 0.7rem;">
+                                        Ver más
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                }
             }
-
-            @if (!Model.Any())
+            else
             {
                 <div class="col-12 text-center py-5">
                     <i class="fa-solid fa-face-frown fa-3x mb-3" style="color:var(--muted);"></i>
                     <p style="color:var(--muted);">No se encontraron juegos con esos criterios.</p>
-                    <a asp-action="Catalogo" class="btn-gs-secondary mt-2">Limpiar filtros</a>
                 </div>
             }
         </div>
+
+        <!-- 3. PAGINACIÓN -->
+        @if (Model.TotalPaginas > 1)
+        {
+            <div class="d-flex justify-content-center mt-5 gap-2">
+                @if (Model.PaginaActual > 1)
+                {
+                    <a asp-action="Catalogo"
+                       asp-route-pagina="@(Model.PaginaActual - 1)"
+                       asp-route-buscar="@Model.Busqueda"
+                       asp-route-idCategoria="@Model.CategoriaId"
+                       class="btn-gs-secondary">Anterior</a>
+                }
+
+                <div class="d-flex align-items-center px-3" style="color:var(--muted); font-size:0.9rem;">
+                    Página <strong>@Model.PaginaActual</strong> de @Model.TotalPaginas
+                </div>
+
+                @if (Model.PaginaActual < Model.TotalPaginas)
+                {
+                    <a asp-action="Catalogo"
+                       asp-route-pagina="@(Model.PaginaActual + 1)"
+                       asp-route-buscar="@Model.Busqueda"
+                       asp-route-idCategoria="@Model.CategoriaId"
+                       class="btn-gs-secondary">Siguiente</a>
+                }
+            </div>
+        }
     </div>
 </div>
